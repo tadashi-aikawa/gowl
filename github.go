@@ -74,7 +74,7 @@ type repository struct {
 	Size             int64       `json:"size"`
 	StargazersCount  int64       `json:"stargazers_count"`
 	WatchersCount    int64       `json:"watchers_count"`
-	Language         *string     `json:"language"`
+	Language         string      `json:"language"`
 	HasIssues        bool        `json:"has_issues"`
 	HasProjects      bool        `json:"has_projects"`
 	HasDownloads     bool        `json:"has_downloads"`

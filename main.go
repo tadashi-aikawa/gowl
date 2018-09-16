@@ -1,9 +1,6 @@
 package main
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "fmt"
 
 func main() {
 	res, err := SearchRepositories("miroir")
@@ -11,10 +8,7 @@ func main() {
 		panic(err)
 	}
 
-	jsonStr, err := json.MarshalIndent(res, "", "    ")
-	if err != nil {
-		panic(err)
+	for _, repo := range res.Items {
+		fmt.Printf("★%-8v%-15v%-15v%-45v%v\n", repo.StargazersCount, repo.ID, repo.Language, repo.FullName, repo.UpdatedAt)
 	}
-
-	fmt.Printf("%v\n", string(jsonStr))
 }
