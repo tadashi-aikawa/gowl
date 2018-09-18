@@ -17,3 +17,6 @@
 # vscode
 /debug
 /.vscode
+
+# goD
+/.gowlconfig
