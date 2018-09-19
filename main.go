@@ -83,7 +83,7 @@ func main() {
 
 	config, err := createConfig()
 	if err != nil {
-		log.Fatal(errors.Wrap(err, "Fail to load `.config`."))
+		log.Fatal(errors.Wrap(err, "Fail to load `.gowlconfig`."))
 	}
 
 	client := createGithubClient(config.GitHub.Token)

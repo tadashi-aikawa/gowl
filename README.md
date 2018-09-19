@@ -52,3 +52,18 @@ $ gowl lodash
 ★90      23645308       JavaScript     mtraynham/lodash-joins                                      2018-09-08 08:44:02 +0000 UTC
 ★267     37610237       JavaScript     cvgellhorn/webpack-boilerplate                              2018-09-15 10:26:13 +0000 UTC
 ```
+
+
+For developer
+-------------
+
+### Prerequirements
+
+* [dep](https://golang.github.io/dep/)
+
+
+### Create environment
+
+```
+$ dep ensure
+```
