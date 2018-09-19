@@ -22,11 +22,16 @@ func main() {
 	handler.Init(config.GitHub.Token)
 
 	if args.Repo {
-		if handler.SearchRepositories(args.Word) != nil {
-			log.Fatal(errors.Wrap(err, "Fail to command `repo`"))
+		if args.Clone {
+			err := handler.CloneRepository(args.Word, args.Seq)
+			if err != nil {
+				log.Fatal(errors.Wrap(err, "Fail to command `clone`"))
+			}
+		} else {
+			err := handler.SearchRepositories(args.Word)
+			if err != nil {
+				log.Fatal(errors.Wrap(err, "Fail to command `repo`"))
+			}
 		}
-	} else {
-		log.Fatal("Unexpected error.")
 	}
-
 }

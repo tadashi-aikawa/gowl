@@ -3,6 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"os/exec"
+	"path"
 
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
@@ -18,6 +21,7 @@ type Handler struct {
 type IHandler interface {
 	Init(token string)
 	SearchRepositories(word string) error
+	CloneRepository(word string, seq int) error
 }
 
 func createGithubClient(token string) *github.Client {
@@ -37,16 +41,40 @@ func (h *Handler) Init(token string) {
 
 // SearchRepositories search and output repositories.
 func (h *Handler) SearchRepositories(word string) error {
-	repos, _, err := h.client.Search.Repositories(context.Background(), word, nil)
+	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
 	if err != nil {
 		return errors.Wrap(err, "Fail to search repositories.")
 	}
 
-	for _, repo := range repos.Repositories {
+	for i, repo := range res.Repositories {
 		fmt.Printf(
-			"*%-8v%-15v%-15v%-60v%-15v\n",
-			repo.GetStargazersCount(), repo.GetID(), repo.GetLanguage(), repo.GetFullName(), repo.GetUpdatedAt(),
+			"%-5v*%-8v%-15v%-15v%-60v%-15v\n",
+			i+1, repo.GetStargazersCount(), repo.GetID(), repo.GetLanguage(), repo.GetFullName(), repo.GetUpdatedAt(),
 		)
+	}
+
+	return nil
+}
+
+// CloneRepository clones repository which first matched word.
+func (h *Handler) CloneRepository(word string, seq int) error {
+	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
+	if err != nil {
+		return errors.Wrap(err, "Fail to search repositories.")
+	}
+
+	// default value
+	if seq == 0 {
+		seq = 1
+	}
+	fullName := res.Repositories[seq-1].GetFullName()
+	cloneURL := res.Repositories[seq-1].GetCloneURL()
+	dst := path.Join(os.Getenv("GOPATH"), "src", "github.com", fullName)
+
+	fmt.Printf("Clone %v to %v\n", cloneURL, dst)
+	err = exec.Command("git", "clone", cloneURL, dst).Run()
+	if err != nil {
+		return errors.Wrap(err, "Fail to clone "+cloneURL)
 	}
 
 	return nil
