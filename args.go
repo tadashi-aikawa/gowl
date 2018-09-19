@@ -9,7 +9,7 @@ const version = "0.1.0"
 const usage = `Gowl.
 
 Usage:
-  gowl <word>
+  gowl repo <word>
   gowl -h | --help
   gowl --version
 
@@ -21,6 +21,7 @@ Options:
 
 // Args created by CLI args
 type Args struct {
+	Repo bool   `docopt:"repo"`
 	Word string `docopt:"<word>"`
 }
 
