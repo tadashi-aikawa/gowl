@@ -13,6 +13,7 @@ type Service struct {
 
 // Config configuration
 type Config struct {
+	Editor string
 	GitHub Service
 }
 

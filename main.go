@@ -19,7 +19,7 @@ func main() {
 	}
 
 	var handler Handler
-	handler.Init(config.GitHub.Token)
+	handler.Init(config.GitHub.Token, config.Editor)
 
 	if args.Repo {
 		if args.Clone {
@@ -32,6 +32,11 @@ func main() {
 			if err != nil {
 				log.Fatal(errors.Wrap(err, "Fail to command `repo`"))
 			}
+		}
+	} else if args.Edit {
+		err := handler.EditRepository(args.Word, args.Seq)
+		if err != nil {
+			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
 	}
 }

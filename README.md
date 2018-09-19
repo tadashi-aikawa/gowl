@@ -20,6 +20,7 @@ Gowl.
 Usage:
   gowl repo <word>
   gowl repo <word> clone [<seq>]
+  gowl edit <word> [<seq>]
   gowl -h | --help
   gowl --version
 
@@ -39,6 +40,8 @@ Quick start
 `.gowlconfig` is a TOML file.
 
 ```toml
+editor = "your editor command (ex: code)"
+
 [github]
 token = "your github token"
 ```
