@@ -43,21 +43,14 @@ func (h *Handler) Init(token string, editor string) {
 	h.editor = editor
 }
 
-// SearchRepositories search and output repositories.
-func (h *Handler) SearchRepositories(word string) error {
+// SearchRepositories search repositories.
+func (h *Handler) SearchRepositories(word string) ([]github.Repository, error) {
 	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
 	if err != nil {
-		return errors.Wrap(err, "Fail to search repositories.")
+		return nil, errors.Wrap(err, "Fail to search repositories.")
 	}
 
-	for i, repo := range res.Repositories {
-		fmt.Printf(
-			"%-5v*%-8v%-15v%-15v%-60v%-15v\n",
-			i+1, repo.GetStargazersCount(), repo.GetID(), repo.GetLanguage(), repo.GetFullName(), repo.GetUpdatedAt(),
-		)
-	}
-
-	return nil
+	return res.Repositories, nil
 }
 
 // CloneRepository clones repository which first matched word.

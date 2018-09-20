@@ -21,20 +21,13 @@ func main() {
 	var handler Handler
 	handler.Init(config.GitHub.Token, config.Editor)
 
-	if args.Repo {
-		if args.Clone {
-			err := handler.CloneRepository(args.Word, args.Seq)
-			if err != nil {
-				log.Fatal(errors.Wrap(err, "Fail to command `clone`"))
-			}
-		} else {
-			err := handler.SearchRepositories(args.Word)
-			if err != nil {
-				log.Fatal(errors.Wrap(err, "Fail to command `repo`"))
-			}
+	if args.Clone {
+		err := CmdClone(handler)
+		if err != nil {
+			log.Fatal(errors.Wrap(err, "Fail to command `clone`"))
 		}
 	} else if args.Edit {
-		err := handler.EditRepository(args.Word, args.Seq)
+		err := CmdEdit(handler, config.Editor)
 		if err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}

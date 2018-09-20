@@ -9,27 +9,20 @@ const version = "0.1.0"
 const usage = `Gowl.
 
 Usage:
-  gowl repo <word>
-  gowl repo <word> clone [<seq>]
-  gowl edit <word> [<seq>]
+  gowl clone
+  gowl edit
   gowl -h | --help
   gowl --version
 
 Options:
-  <word>        Search word for repository.
-  <seq>         Specify selections
   -h --help     Show this screen.
   --version     Show version.
   `
 
 // Args created by CLI args
 type Args struct {
-	Repo  bool `docopt:"repo"`
 	Clone bool `docopt:"clone"`
 	Edit  bool `docopt:"edit"`
-
-	Word string `docopt:"<word>"`
-	Seq  int    `docopt:"<seq>"`
 }
 
 // CreateArgs creates Args
