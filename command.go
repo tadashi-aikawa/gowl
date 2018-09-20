@@ -88,20 +88,20 @@ func CmdEdit(handler Handler, editor string) error {
 		return errors.Wrap(err, "Fail to search repositories")
 	}
 
-	var selection string
-	selectedPrompt := &survey.Select{
-		Message:  "Choose a repository you want to edit:",
+	var selections []string
+	selectedPrompt := &survey.MultiSelect{
+		Message:  "Choose repositories you want to edit:",
 		Options:  repoDirs,
 		PageSize: 15,
 	}
-	survey.AskOne(selectedPrompt, &selection, nil)
-	if selection == "" {
+	survey.AskOne(selectedPrompt, &selections, nil)
+	if len(selections) == 0 {
 		return nil
 	}
 
-	err = exec.Command(editor, selection).Run()
+	err = exec.Command(editor, selections...).Run()
 	if err != nil {
-		return errors.Wrap(err, "Fail to edit repository "+selection)
+		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
 	}
 
 	return nil
