@@ -35,7 +35,7 @@ Options:
 Quick start
 -----------
 
-### Create `.gowlconfig`
+### Create `~/.gowlconfig`
 
 `.gowlconfig` is a TOML file.
 

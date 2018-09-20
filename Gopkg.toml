@@ -44,3 +44,7 @@
 [[constraint]]
   branch = "master"
   name = "github.com/docopt/docopt-go"
+
+[[constraint]]
+  name = "github.com/mitchellh/go-homedir"
+  version = "1.0.0"

@@ -1,10 +1,12 @@
 package main
 
 import (
-	"github.com/BurntSushi/toml"
-)
+	"path/filepath"
 
-const configPath = ".gowlconfig"
+	"github.com/BurntSushi/toml"
+	homedir "github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
+)
 
 // Service is information of Github, Bitbucket, and so on.
 type Service struct {
@@ -19,6 +21,13 @@ type Config struct {
 
 // CreateConfig creates configurations from .gowlconfig(toml)
 func CreateConfig() (Config, error) {
+	home, err := homedir.Dir()
+	if err != nil {
+		return Config{}, errors.Wrap(err, "Home directory is not found.")
+	}
+
+	configPath := filepath.Join(home, ".gowlconfig")
+
 	var conf Config
 	if _, err := toml.DecodeFile(configPath, &conf); err != nil {
 		return Config{}, err

@@ -42,6 +42,14 @@
   revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
 
 [[projects]]
+  digest = "1:78bbb1ba5b7c3f2ed0ea1eab57bdd3859aec7e177811563edc41198a760b06af"
+  name = "github.com/mitchellh/go-homedir"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
+  version = "v1.0.0"
+
+[[projects]]
   digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
   name = "github.com/pkg/errors"
   packages = ["."]
@@ -94,6 +102,7 @@
     "github.com/BurntSushi/toml",
     "github.com/docopt/docopt-go",
     "github.com/google/go-github/github",
+    "github.com/mitchellh/go-homedir",
     "github.com/pkg/errors",
     "golang.org/x/oauth2",
   ]
