@@ -11,35 +11,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:454adc7f974228ff789428b6dc098638c57a64aa0718f0bd61e53d3cd39d7a75"
-  name = "github.com/abiosoft/readline"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "155bce2042db95a783081fab225e74dd879055b0"
-
-[[projects]]
-  branch = "master"
   digest = "1:289fa52f4d9e9c817a003324bc14e9339b996dbe02b9f6cfc57a9383e5365287"
   name = "github.com/docopt/docopt-go"
   packages = ["."]
   pruneopts = "UT"
   revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
-
-[[projects]]
-  digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
-  name = "github.com/fatih/color"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
-  version = "v1.7.0"
-
-[[projects]]
-  branch = "master"
-  digest = "1:50a46ab1d5edbbdd55125b4d37f1bf503d0807c26461f9ad7b358d6006641d09"
-  name = "github.com/flynn-archive/go-shlex"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "3f9db97f856818214da2e1057f8ad84803971cff"
 
 [[projects]]
   digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
@@ -58,12 +34,12 @@
   version = "v18.1.0"
 
 [[projects]]
-  branch = "master"
   digest = "1:a63cff6b5d8b95638bfe300385d93b2a6d9d687734b863da8e09dc834510a690"
   name = "github.com/google/go-querystring"
   packages = ["query"]
   pruneopts = "UT"
-  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+  revision = "44c6ddd0a2342c386950e880b658017258da92fc"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -122,7 +98,7 @@
     "context/ctxhttp",
   ]
   pruneopts = "UT"
-  revision = "26e67e76b6c3f6ce91f7c52def5af501b4e0f3a2"
+  revision = "2f5d2388922f370f4355f327fcf4cfe9f5583908"
 
 [[projects]]
   branch = "master"
@@ -144,7 +120,7 @@
   revision = "d641721ec2dead6fe5ca284096fe4b1fcd49e427"
 
 [[projects]]
-  digest = "1:328b5e4f197d928c444a51a75385f4b978915c0e75521f0ad6a3db976c97a7d3"
+  digest = "1:6247f76e55a1e1a5c19a81e2d4b4dff6730461eeb5bbb0a16dd4a8ec8637ee93"
   name = "google.golang.org/appengine"
   packages = [
     "internal",
@@ -156,8 +132,8 @@
     "urlfetch",
   ]
   pruneopts = "UT"
-  revision = "b1f26356af11148e710935ed1ac8a7f5702c7612"
-  version = "v1.1.0"
+  revision = "ae0ab99deb4dc413a2b4bd6c8bdd0eb67f1e4d06"
+  version = "v1.2.0"
 
 [[projects]]
   digest = "1:b814bda2a49038050f97dfcfface3ba030616129ffa35df404ec7378402c8a5e"
@@ -171,14 +147,6 @@
   revision = "f30c5d1830c892f533140f29a1de89141dc217f5"
   version = "v1.6.2"
 
-[[projects]]
-  digest = "1:d19cfbbf2e7dad7c6faba60dc7700d6b7d6ff3d3c9477a8e44c32a9eaf3cd907"
-  name = "gopkg.in/abiosoft/ishell.v2"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "0a6b1640e32638dd433ee7e57ec325a7bdd79561"
-  version = "v2.0.0"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
@@ -190,7 +158,6 @@
     "github.com/pkg/errors",
     "golang.org/x/oauth2",
     "gopkg.in/AlecAivazis/survey.v1",
-    "gopkg.in/abiosoft/ishell.v2",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
