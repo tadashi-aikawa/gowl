@@ -7,7 +7,9 @@ Go tools for GitHub and Bitbucket
 Install
 -------
 
-TODO...
+```
+$ go get -u github.com/tadashi-aikawa/gowl
+```
 
 
 Usage
