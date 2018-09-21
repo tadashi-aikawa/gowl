@@ -4,27 +4,47 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
 
 	"github.com/google/go-github/github"
 	"github.com/pkg/errors"
 	"golang.org/x/oauth2"
 )
 
-// Handler handles a command.
-type Handler struct {
-	client *github.Client
-	editor string
+type Repository struct {
+	FullName string
+	CloneURL string
+	Language string
+	License  string
+	Star     int
+}
+
+func (r *Repository) fromGithub(gr *github.Repository) *Repository {
+	return &Repository{
+		FullName: gr.GetFullName(),
+		CloneURL: gr.GetCloneURL(),
+		Language: gr.GetLanguage(),
+		License:  gr.GetLicense().GetName(),
+		Star:     gr.GetStargazersCount(),
+	}
 }
 
 // IHandler is IF of Handler.
 type IHandler interface {
 	Init(token string, editor string)
-	SearchRepositories(word string) error
-	CloneRepository(word string, seq int) error
-	ChangeDirectory(word string, seq int) error
+	SearchRepositories(word string) ([]Repository, error)
+}
+
+// GitHubHandler handles a command.
+type GitHubHandler struct {
+	client *github.Client
+	editor string
+}
+
+// GitHubHandler handles a command.
+type BitbucketServerHandler struct {
+	client *github.Client
+	editor string
 }
 
 func createGithubClient(token string) *github.Client {
@@ -35,46 +55,6 @@ func createGithubClient(token string) *github.Client {
 
 	tc := oauth2.NewClient(ctx, ts)
 	return github.NewClient(tc)
-}
-
-// Init initializes.
-func (h *Handler) Init(token string, editor string) {
-	h.client = createGithubClient(token)
-	h.editor = editor
-}
-
-// SearchRepositories search repositories.
-func (h *Handler) SearchRepositories(word string) ([]github.Repository, error) {
-	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
-	if err != nil {
-		return nil, errors.Wrap(err, "Fail to search repositories.")
-	}
-
-	return res.Repositories, nil
-}
-
-// CloneRepository clones repository which first matched word.
-func (h *Handler) CloneRepository(word string, seq int) error {
-	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
-	if err != nil {
-		return errors.Wrap(err, "Fail to search repositories.")
-	}
-
-	// default value
-	if seq == 0 {
-		seq = 1
-	}
-	fullName := res.Repositories[seq-1].GetFullName()
-	cloneURL := res.Repositories[seq-1].GetCloneURL()
-	dst := filepath.Join(os.Getenv("GOPATH"), "src", "github.com", fullName)
-
-	fmt.Printf("Clone %v to %v\n", cloneURL, dst)
-	err = exec.Command("git", "clone", cloneURL, dst).Run()
-	if err != nil {
-		return errors.Wrap(err, "Fail to clone "+cloneURL)
-	}
-
-	return nil
 }
 
 func listRepositories(dir string) ([]string, error) {
@@ -93,33 +73,55 @@ func listRepositories(dir string) ([]string, error) {
 	return gitDirs, nil
 }
 
-// EditRepository edit repository which first matched word by specified editor.
-func (h *Handler) EditRepository(word string, seq int) error {
-	githubDir := filepath.Join(os.Getenv("GOPATH"), "src", "github.com")
-	repoDirs, err := listRepositories(githubDir)
+// Init initializes.
+func (h *GitHubHandler) Init(token string, editor string) {
+	h.client = createGithubClient(token)
+	h.editor = editor
+}
+
+func (h *BitbucketServerHandler) Init(token string, editor string) {
+	h.client = createGithubClient(token)
+	h.editor = editor
+}
+
+func NewGithubHandler() IHandler {
+	return &GitHubHandler{}
+}
+
+func NewBitbucketServerHandler() IHandler {
+	return &BitbucketServerHandler{}
+}
+
+// SearchRepositories search repositories.
+func (h *GitHubHandler) SearchRepositories(word string) ([]Repository, error) {
+	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
 	if err != nil {
-		return errors.Wrap(err, "Fail to search repositories")
+		return nil, errors.Wrap(err, "Fail to search repositories.")
 	}
 
-	var filteredRepoDirs []string
-	for _, d := range repoDirs {
-		if strings.Contains(d, word) {
-			filteredRepoDirs = append(filteredRepoDirs, d)
-		}
+	var repos []Repository
+	for _, ghrepo := range res.Repositories {
+		var r Repository
+		repos = append(repos, *r.fromGithub(&ghrepo))
 	}
 
-	// default value
-	if seq == 0 {
-		seq = 1
-	}
+	return repos, nil
+}
 
-	target := filteredRepoDirs[seq-1]
-	fmt.Printf("Edit %v.", target)
-
-	err = exec.Command(h.editor, target).Run()
+// SearchRepositories search repositories.
+func (h *BitbucketServerHandler) SearchRepositories(word string) ([]Repository, error) {
+	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
 	if err != nil {
-		return errors.Wrap(err, "Fail to edit repository "+target)
+		return nil, errors.Wrap(err, "Fail to search repositories.")
 	}
 
-	return nil
+	fmt.Println("Bitbucketだよーーー")
+
+	var repos []Repository
+	for _, ghrepo := range res.Repositories {
+		var r Repository
+		repos = append(repos, *r.fromGithub(&ghrepo))
+	}
+
+	return repos, nil
 }

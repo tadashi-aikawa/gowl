@@ -6,17 +6,15 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/google/go-github/github"
-
 	"github.com/pkg/errors"
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
-func toSelection(r github.Repository) string {
-	return fmt.Sprintf("*%-5v %-45v %-10v %v", r.GetStargazersCount(), r.GetFullName(), r.GetLanguage(), r.GetLicense().GetKey())
+func toSelection(r Repository) string {
+	return fmt.Sprintf("*%-5v %-45v %-10v %v", r.Star, r.FullName, r.Language, r.License)
 }
 
-func loopClone(handler Handler) (github.Repository, error) {
+func loopClone(handler IHandler) (Repository, error) {
 	for {
 		word := ""
 		prompt := &survey.Input{
@@ -24,7 +22,7 @@ func loopClone(handler Handler) (github.Repository, error) {
 		}
 		survey.AskOne(prompt, &word, nil)
 		if word == "" {
-			return github.Repository{}, nil
+			return Repository{}, nil
 		}
 
 		repos, err := handler.SearchRepositories(word)
@@ -56,32 +54,32 @@ func loopClone(handler Handler) (github.Repository, error) {
 }
 
 // CmdClone
-func CmdClone(handler Handler) error {
+func CmdClone(handler IHandler) error {
 	repo, err := loopClone(handler)
-	if repo.GetID() == 0 {
+	if repo.FullName == "" {
 		return nil
 	}
 	if err != nil {
 		return err
 	}
 
-	dst := filepath.Join(os.Getenv("GOPATH"), "src", "github.com", repo.GetFullName())
+	dst := filepath.Join(os.Getenv("GOPATH"), "src", "github.com", repo.FullName)
 
-	fmt.Printf("Clone %v to %v\n", repo.GetCloneURL(), dst)
-	cmd := exec.Command("git", "clone", repo.GetCloneURL(), dst)
+	fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
+	cmd := exec.Command("git", "clone", repo.CloneURL, dst)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
 	err = cmd.Run()
 	if err != nil {
-		return errors.Wrap(err, "Fail to clone "+repo.GetCloneURL())
+		return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
 	}
 
 	return nil
 }
 
 // CmdEdit
-func CmdEdit(handler Handler, editor string) error {
+func CmdEdit(handler IHandler, editor string) error {
 	githubDir := filepath.Join(os.Getenv("GOPATH"), "src")
 	repoDirs, err := listRepositories(githubDir)
 	if err != nil {
