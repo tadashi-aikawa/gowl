@@ -63,7 +63,7 @@ func CmdClone(handler IHandler) error {
 		return err
 	}
 
-	dst := filepath.Join(os.Getenv("GOPATH"), "src", "github.com", repo.FullName)
+	dst := filepath.Join(os.Getenv("GOPATH"), "src", handler.GetPrefix(), repo.FullName)
 
 	fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
 	cmd := exec.Command("git", "clone", repo.CloneURL, dst)

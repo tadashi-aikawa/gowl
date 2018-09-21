@@ -18,14 +18,15 @@ $ gowl -h
 Gowl.
 
 Usage:
-  gowl clone
+  gowl clone [--bitbucket-server]
   gowl edit
   gowl -h | --help
   gowl --version
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -B --bitbucket-server       Use Bitbucket Server
+  -h --help                   Show this screen.
+  --version                   Show version.
 ```
 
 
@@ -41,6 +42,12 @@ editor = "your editor command (ex: code)"
 
 [github]
 token = "your github token"
+
+[bitbucketserver]
+baseurl = "http://your.bitbucket.server.url"
+username = "yourname"
+password = "yourpassword"
+prefix = "your prefix in gopath (ex: mamansoft/bitbucket)"
 ```
 
 ### Run

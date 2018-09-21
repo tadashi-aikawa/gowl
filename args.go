@@ -9,20 +9,23 @@ const version = "0.1.0"
 const usage = `Gowl.
 
 Usage:
-  gowl clone
+  gowl clone [--bitbucket-server]
   gowl edit
   gowl -h | --help
   gowl --version
 
 Options:
-  -h --help     Show this screen.
-  --version     Show version.
+  -B --bitbucket-server       Use Bitbucket Server
+  -h --help                   Show this screen.
+  --version                   Show version.
   `
 
 // Args created by CLI args
 type Args struct {
 	Clone bool `docopt:"clone"`
 	Edit  bool `docopt:"edit"`
+
+	BitbucketServer bool `docopt:"--bitbucket-server"`
 }
 
 // CreateArgs creates Args

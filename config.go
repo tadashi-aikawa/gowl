@@ -10,13 +10,18 @@ import (
 
 // Service is information of Github, Bitbucket, and so on.
 type Service struct {
-	Token string
+	Token    *string
+	UserName *string
+	Password *string
+	BaseURL  *string
+	Prefix   *string
 }
 
 // Config configuration
 type Config struct {
-	Editor string
-	GitHub Service
+	Editor          string
+	GitHub          Service
+	BitbucketServer Service
 }
 
 // CreateConfig creates configurations from .gowlconfig(toml)

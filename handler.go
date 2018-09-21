@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -29,22 +28,42 @@ func (r *Repository) fromGithub(gr *github.Repository) *Repository {
 	}
 }
 
+func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
+	return &Repository{
+		FullName: bsr.getFullName(),
+		CloneURL: bsr.Links.Clone[0].Href,
+		Language: "UNKNOWN",
+		License:  "No License",
+		Star:     0,
+	}
+}
+
 // IHandler is IF of Handler.
 type IHandler interface {
-	Init(token string, editor string)
 	SearchRepositories(word string) ([]Repository, error)
+	GetPrefix() string
 }
 
 // GitHubHandler handles a command.
 type GitHubHandler struct {
 	client *github.Client
 	editor string
+	prefix string
 }
 
 // GitHubHandler handles a command.
 type BitbucketServerHandler struct {
-	client *github.Client
+	client *BitbucketClient
 	editor string
+	prefix string
+}
+
+func createBitbucketClient(userName string, password string, baseURL string) *BitbucketClient {
+	return &BitbucketClient{
+		BaseURL:  baseURL,
+		UserName: userName,
+		Password: password,
+	}
 }
 
 func createGithubClient(token string) *github.Client {
@@ -73,23 +92,28 @@ func listRepositories(dir string) ([]string, error) {
 	return gitDirs, nil
 }
 
-// Init initializes.
-func (h *GitHubHandler) Init(token string, editor string) {
-	h.client = createGithubClient(token)
-	h.editor = editor
+func NewGithubHandler(config Config) IHandler {
+	return &GitHubHandler{
+		client: createGithubClient(*config.GitHub.Token),
+		editor: config.Editor,
+		prefix: "github.com",
+	}
 }
 
-func (h *BitbucketServerHandler) Init(token string, editor string) {
-	h.client = createGithubClient(token)
-	h.editor = editor
+func NewBitbucketServerHandler(config Config) IHandler {
+	return &BitbucketServerHandler{
+		client: createBitbucketClient(*config.BitbucketServer.UserName, *config.BitbucketServer.Password, *config.BitbucketServer.BaseURL),
+		editor: config.Editor,
+		prefix: *config.BitbucketServer.Prefix,
+	}
 }
 
-func NewGithubHandler() IHandler {
-	return &GitHubHandler{}
+func (h *GitHubHandler) GetPrefix() string {
+	return h.prefix
 }
 
-func NewBitbucketServerHandler() IHandler {
-	return &BitbucketServerHandler{}
+func (h *BitbucketServerHandler) GetPrefix() string {
+	return h.prefix
 }
 
 // SearchRepositories search repositories.
@@ -110,17 +134,15 @@ func (h *GitHubHandler) SearchRepositories(word string) ([]Repository, error) {
 
 // SearchRepositories search repositories.
 func (h *BitbucketServerHandler) SearchRepositories(word string) ([]Repository, error) {
-	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
+	res, err := h.client.searchRepositories(word)
 	if err != nil {
 		return nil, errors.Wrap(err, "Fail to search repositories.")
 	}
 
-	fmt.Println("Bitbucketだよーーー")
-
 	var repos []Repository
-	for _, ghrepo := range res.Repositories {
+	for _, bsrepo := range res.Values {
 		var r Repository
-		repos = append(repos, *r.fromGithub(&ghrepo))
+		repos = append(repos, *r.fromBitbucketServer(&bsrepo))
 	}
 
 	return repos, nil

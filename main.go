@@ -18,9 +18,12 @@ func main() {
 		log.Fatal(errors.Wrap(err, "Fail to load `.gowlconfig`."))
 	}
 
-	// var handler GitHubHandler
-	handler := NewBitbucketServerHandler()
-	handler.Init(config.GitHub.Token, config.Editor)
+	var handler IHandler
+	if args.BitbucketServer {
+		handler = NewBitbucketServerHandler(config)
+	} else {
+		handler = NewGithubHandler(config)
+	}
 
 	if args.Clone {
 		err := CmdClone(handler)
