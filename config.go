@@ -19,7 +19,7 @@ type Service struct {
 
 // Config configuration
 type Config struct {
-	Editor          string
+	Editors         map[string]string
 	GitHub          Service
 	BitbucketServer Service
 }

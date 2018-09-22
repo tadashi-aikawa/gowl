@@ -20,12 +20,13 @@ $ gowl -h
 Gowl.
 
 Usage:
-  gowl clone [--bitbucket-server]
-  gowl edit
+  gowl get [--bitbucket-server]
+  gowl edit <editor>
   gowl -h | --help
   gowl --version
 
 Options:
+  <editor>                    Use editor
   -B --bitbucket-server       Use Bitbucket Server
   -h --help                   Show this screen.
   --version                   Show version.
@@ -40,7 +41,9 @@ Quick start
 `.gowlconfig` is a TOML file.
 
 ```toml
-editor = "your editor command (ex: code)"
+[editors]
+code = "code"
+vim = "vim"
 
 [github]
 token = "your github token"
@@ -51,6 +54,7 @@ username = "yourname"
 password = "yourpassword"
 prefix = "your prefix in gopath (ex: mamansoft/bitbucket)"
 ```
+
 
 ### Run
 

@@ -30,7 +30,7 @@ func main() {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
 	} else if args.CmdEdit {
-		if err := CmdEdit(handler, config.Editor); err != nil {
+		if err := CmdEdit(handler, config.Editors[args.Editor]); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
 	}

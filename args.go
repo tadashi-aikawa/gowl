@@ -10,11 +10,12 @@ const usage = `Gowl.
 
 Usage:
   gowl get [--bitbucket-server]
-  gowl edit
+  gowl edit <editor>
   gowl -h | --help
   gowl --version
 
 Options:
+  <editor>                    Use editor
   -B --bitbucket-server       Use Bitbucket Server
   -h --help                   Show this screen.
   --version                   Show version.
@@ -25,7 +26,8 @@ type Args struct {
 	CmdGet  bool `docopt:"get"`
 	CmdEdit bool `docopt:"edit"`
 
-	BitbucketServer bool `docopt:"--bitbucket-server"`
+	Editor          string `docopt:"<editor>"`
+	BitbucketServer bool   `docopt:"--bitbucket-server"`
 }
 
 // CreateArgs creates Args

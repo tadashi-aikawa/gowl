@@ -53,8 +53,8 @@ func doRepositorySelection(handler IHandler) (Repository, error) {
 	}
 }
 
-func execCommandIO(workdir *string, commands ...string) error {
-	cmd := exec.Command(commands[0], commands[1:]...)
+func execCommandIO(workdir *string, name string, arg ...string) error {
+	cmd := exec.Command(name, arg...)
 	if workdir != nil {
 		cmd.Dir = *workdir
 	}
@@ -111,8 +111,8 @@ func CmdEdit(handler IHandler, editor string) error {
 		return nil
 	}
 
-	err = exec.Command(editor, selections...).Run()
-	if err != nil {
+	// err = exec.Command(editor, selections...).Run()
+	if err := execCommandIO(nil, editor, selections...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
 	}
 

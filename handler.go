@@ -47,14 +47,12 @@ type IHandler interface {
 // GitHubHandler handles a command.
 type GitHubHandler struct {
 	client *github.Client
-	editor string
 	prefix string
 }
 
 // GitHubHandler handles a command.
 type BitbucketServerHandler struct {
 	client *BitbucketClient
-	editor string
 	prefix string
 }
 
@@ -95,7 +93,6 @@ func listRepositories(dir string) ([]string, error) {
 func NewGithubHandler(config Config) IHandler {
 	return &GitHubHandler{
 		client: createGithubClient(*config.GitHub.Token),
-		editor: config.Editor,
 		prefix: "github.com",
 	}
 }
@@ -103,7 +100,6 @@ func NewGithubHandler(config Config) IHandler {
 func NewBitbucketServerHandler(config Config) IHandler {
 	return &BitbucketServerHandler{
 		client: createBitbucketClient(*config.BitbucketServer.UserName, *config.BitbucketServer.Password, *config.BitbucketServer.BaseURL),
-		editor: config.Editor,
 		prefix: *config.BitbucketServer.Prefix,
 	}
 }
