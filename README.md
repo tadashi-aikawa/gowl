@@ -20,7 +20,7 @@ $ gowl --help
 Gowl.
 
 Usage:
-  gowl get [--bitbucket-server] [-f]
+  gowl get [-s | --shallow] [-f | --force] [-B | --bitbucket-server]
   gowl edit <tool>
   gowl web
   gowl list
@@ -30,6 +30,7 @@ Usage:
 Options:
   <tool>                      Use tool
   -B --bitbucket-server       Use Bitbucket Server
+  -s --shallow                Use shallow clone
   -f --force                  Force remove and reclone if exists
   -h --help                   Show this screen.
   --version                   Show version.
