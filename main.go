@@ -30,12 +30,16 @@ func main() {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
 	} else if args.CmdEdit {
-		if err := CmdEdit(handler, config.Editors[args.Editor]); err != nil {
+		if err := CmdEdit(handler, config.Tools[args.Tool]); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
 	} else if args.CmdWeb {
 		if err := CmdWeb(handler, config.Browser); err != nil {
-			log.Fatal(errors.Wrap(err, "Fail to command `open`"))
+			log.Fatal(errors.Wrap(err, "Fail to command `web`"))
+		}
+	} else if args.CmdList {
+		if err := CmdList(handler); err != nil {
+			log.Fatal(errors.Wrap(err, "Fail to command `cd`"))
 		}
 	}
 }

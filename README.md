@@ -21,13 +21,14 @@ Gowl.
 
 Usage:
   gowl get [--bitbucket-server] [-f]
-  gowl edit <editor>
+  gowl edit <tool>
   gowl web
+  gowl list
   gowl -h | --help
   gowl --version
 
 Options:
-  <editor>                    Use editor
+  <tool>                      Use tool
   -B --bitbucket-server       Use Bitbucket Server
   -f --force                  Force remove and reclone if exists
   -h --help                   Show this screen.
@@ -43,7 +44,10 @@ Quick start
 `.gowlconfig` is a TOML file.
 
 ```toml
-[editors]
+browser = "Your browser"
+# ex. C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe
+
+[tools]
 code = "code"
 vim = "vim"
 
@@ -60,7 +64,10 @@ prefix = "your prefix in gopath (ex: mamansoft/bitbucket)"
 
 ### Run
 
-`gowl clone` or `gowl edit`
+For example..
+
+1. `gowl clone`
+2. `gowl edit`
 
 
 For developer

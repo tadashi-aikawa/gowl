@@ -78,6 +78,29 @@ func getCommandStdout(workdir *string, name string, arg ...string) (string, erro
 	return string(out), nil
 }
 
+// selectLocalRepository returns repository path.
+func selectLocalRepository() (string, error) {
+	repoRoot := filepath.Join(os.Getenv("GOPATH"), "src")
+	repoDirs, err := listRepositories(repoRoot)
+	if err != nil {
+		return "", errors.Wrap(err, "Fail to search repositories")
+	}
+
+	var selection string
+	selectedPrompt := &survey.Select{
+		Message:  "Choose a repository:",
+		Options:  repoDirs,
+		PageSize: 15,
+	}
+	survey.AskOne(selectedPrompt, &selection, nil)
+
+	if selection == "" {
+		return "", nil
+	}
+
+	return selection, nil
+}
+
 // selectLocalRepositories returns repository paths.
 func selectLocalRepositories() ([]string, error) {
 	repoRoot := filepath.Join(os.Getenv("GOPATH"), "src")
@@ -141,8 +164,22 @@ func CmdGet(handler IHandler, force bool) error {
 	return nil
 }
 
+// CmdList executes `open`
+func CmdList(handler IHandler) error {
+	selection, err := selectLocalRepository()
+	if selection == "" {
+		return nil
+	}
+	if err != nil {
+		return errors.Wrap(err, "Fail to select a repository.")
+	}
+
+	fmt.Println(selection)
+	return nil
+}
+
 // CmdEdit executes `edit`
-func CmdEdit(handler IHandler, editor string) error {
+func CmdEdit(handler IHandler, tool string) error {
 	selections, err := selectLocalRepositories()
 	if selections == nil {
 		return nil
@@ -151,14 +188,14 @@ func CmdEdit(handler IHandler, editor string) error {
 		return errors.Wrap(err, "Fail to select repositories.")
 	}
 
-	if err := execCommand(nil, editor, selections...); err != nil {
+	if err := execCommand(nil, tool, selections...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
 	}
 
 	return nil
 }
 
-// CmdWeb executes `open`
+// CmdWeb executes `web`
 func CmdWeb(handler IHandler, browser string) error {
 	selections, err := selectLocalRepositories()
 	if selections == nil {
