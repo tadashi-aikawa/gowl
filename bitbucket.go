@@ -6,12 +6,14 @@ import (
 	"net/http"
 )
 
+// BitbucketClient includes fields used by gowl
 type BitbucketClient struct {
 	BaseURL  string
 	UserName string
 	Password string
 }
 
+// BitbucketRepositoryResponse is struct of a API response
 type BitbucketRepositoryResponse struct {
 	Size       int64                 `json:"size"`
 	Limit      int64                 `json:"limit"`
@@ -20,6 +22,7 @@ type BitbucketRepositoryResponse struct {
 	Start      int64                 `json:"start"`
 }
 
+// BitbucketRepository includes fields used by gowl
 type BitbucketRepository struct {
 	Slug          string     `json:"slug"`
 	ID            int64      `json:"id"`

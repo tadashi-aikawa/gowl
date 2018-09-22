@@ -63,7 +63,7 @@ func execCommandIO(workdir *string, name string, arg ...string) error {
 	return cmd.Run()
 }
 
-// CmdGet
+// CmdGet executes `get`
 func CmdGet(handler IHandler) error {
 	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
@@ -92,7 +92,7 @@ func CmdGet(handler IHandler) error {
 	return nil
 }
 
-// CmdEdit
+// CmdEdit executes `edit`
 func CmdEdit(handler IHandler, editor string) error {
 	githubDir := filepath.Join(os.Getenv("GOPATH"), "src")
 	repoDirs, err := listRepositories(githubDir)

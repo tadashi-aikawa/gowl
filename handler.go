@@ -10,6 +10,7 @@ import (
 	"golang.org/x/oauth2"
 )
 
+// Repository used by gowl
 type Repository struct {
 	FullName string
 	CloneURL string
@@ -44,13 +45,13 @@ type IHandler interface {
 	GetPrefix() string
 }
 
-// GitHubHandler handles a command.
+// GitHubHandler handles a github command.
 type GitHubHandler struct {
 	client *github.Client
 	prefix string
 }
 
-// GitHubHandler handles a command.
+// BitbucketServerHandler handles a bitbucket command.
 type BitbucketServerHandler struct {
 	client *BitbucketClient
 	prefix string
@@ -90,6 +91,7 @@ func listRepositories(dir string) ([]string, error) {
 	return gitDirs, nil
 }
 
+// NewGithubHandler creates Githubhandler
 func NewGithubHandler(config Config) IHandler {
 	return &GitHubHandler{
 		client: createGithubClient(*config.GitHub.Token),
@@ -97,6 +99,7 @@ func NewGithubHandler(config Config) IHandler {
 	}
 }
 
+// NewBitbucketServerHandler creates BitbucketServerHandler
 func NewBitbucketServerHandler(config Config) IHandler {
 	return &BitbucketServerHandler{
 		client: createBitbucketClient(*config.BitbucketServer.UserName, *config.BitbucketServer.Password, *config.BitbucketServer.BaseURL),
@@ -104,10 +107,12 @@ func NewBitbucketServerHandler(config Config) IHandler {
 	}
 }
 
+// GetPrefix gets prefix for local repository locastions
 func (h *GitHubHandler) GetPrefix() string {
 	return h.prefix
 }
 
+// GetPrefix gets prefix for local repository locastions
 func (h *BitbucketServerHandler) GetPrefix() string {
 	return h.prefix
 }
