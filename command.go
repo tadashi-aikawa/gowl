@@ -6,7 +6,9 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"time"
 
+	"github.com/briandowns/spinner"
 	"github.com/pkg/errors"
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
@@ -26,7 +28,11 @@ func doRepositorySelection(handler IHandler) (Repository, error) {
 			return Repository{}, nil
 		}
 
+		s := spinner.New(spinner.CharSets[35], 100*time.Millisecond)
+		s.Color("fgHiGreen")
+		s.Start()
 		repos, err := handler.SearchRepositories(word)
+		s.Stop()
 		if err != nil {
 			panic(err)
 		}

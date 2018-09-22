@@ -10,12 +10,28 @@
   version = "v0.3.0"
 
 [[projects]]
+  digest = "1:89e98f6335a3ca6d6ae179bb030d7d73326b809c3ba87e9a4b7dffd458ab85d7"
+  name = "github.com/briandowns/spinner"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9f016caa1359c8ecdc1d95243e92c0d28b524368"
+  version = "1.2"
+
+[[projects]]
   branch = "master"
   digest = "1:289fa52f4d9e9c817a003324bc14e9339b996dbe02b9f6cfc57a9383e5365287"
   name = "github.com/docopt/docopt-go"
   packages = ["."]
   pruneopts = "UT"
   revision = "ee0de3bc6815ee19d4a46c7eb90f829db0e014b1"
+
+[[projects]]
+  digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
+  name = "github.com/fatih/color"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
+  version = "v1.7.0"
 
 [[projects]]
   digest = "1:97df918963298c287643883209a2c3f642e6593379f97ab400c2a2e219ab647d"
@@ -152,6 +168,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/BurntSushi/toml",
+    "github.com/briandowns/spinner",
     "github.com/docopt/docopt-go",
     "github.com/google/go-github/github",
     "github.com/mitchellh/go-homedir",
