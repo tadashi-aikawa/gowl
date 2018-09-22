@@ -54,7 +54,7 @@ func doRepositorySelection(handler IHandler) (Repository, error) {
 	}
 }
 
-func execCommandIO(workdir *string, name string, arg ...string) error {
+func execCommand(workdir *string, name string, arg ...string) error {
 	cmd := exec.Command(name, arg...)
 	if workdir != nil {
 		cmd.Dir = *workdir
@@ -78,6 +78,28 @@ func getCommandStdout(workdir *string, name string, arg ...string) (string, erro
 	return string(out), nil
 }
 
+// selectLocalRepositories returns repository paths.
+func selectLocalRepositories() ([]string, error) {
+	repoRoot := filepath.Join(os.Getenv("GOPATH"), "src")
+	repoDirs, err := listRepositories(repoRoot)
+	if err != nil {
+		return nil, errors.Wrap(err, "Fail to search repositories")
+	}
+
+	var selections []string
+	selectedPrompt := &survey.MultiSelect{
+		Message:  "Choose repositories:",
+		Options:  repoDirs,
+		PageSize: 15,
+	}
+	survey.AskOne(selectedPrompt, &selections, nil)
+	if len(selections) == 0 {
+		return nil, nil
+	}
+
+	return selections, nil
+}
+
 // CmdGet executes `get`
 func CmdGet(handler IHandler) error {
 	repo, err := doRepositorySelection(handler)
@@ -91,15 +113,15 @@ func CmdGet(handler IHandler) error {
 	dst := filepath.Join(os.Getenv("GOPATH"), "src", handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
 		fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
-		if err := execCommandIO(nil, "git", "clone", repo.CloneURL, dst); err != nil {
+		if err := execCommand(nil, "git", "clone", repo.CloneURL, dst); err != nil {
 			return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
 		}
 	} else {
 		fmt.Printf("Pull %v\n", dst)
-		if err := execCommandIO(&dst, "git", "checkout", "master"); err != nil {
+		if err := execCommand(&dst, "git", "checkout", "master"); err != nil {
 			return errors.Wrap(err, "Fail to checkout master in "+dst)
 		}
-		if err := execCommandIO(&dst, "git", "pull"); err != nil {
+		if err := execCommand(&dst, "git", "pull"); err != nil {
 			return errors.Wrap(err, "Fail to pull in "+dst)
 		}
 	}
@@ -109,24 +131,15 @@ func CmdGet(handler IHandler) error {
 
 // CmdEdit executes `edit`
 func CmdEdit(handler IHandler, editor string) error {
-	githubDir := filepath.Join(os.Getenv("GOPATH"), "src")
-	repoDirs, err := listRepositories(githubDir)
-	if err != nil {
-		return errors.Wrap(err, "Fail to search repositories")
-	}
-
-	var selections []string
-	selectedPrompt := &survey.MultiSelect{
-		Message:  "Choose repositories you want to edit:",
-		Options:  repoDirs,
-		PageSize: 15,
-	}
-	survey.AskOne(selectedPrompt, &selections, nil)
-	if len(selections) == 0 {
+	selections, err := selectLocalRepositories()
+	if selections == nil {
 		return nil
 	}
+	if err != nil {
+		return errors.Wrap(err, "Fail to select repositories.")
+	}
 
-	if err := execCommandIO(nil, editor, selections...); err != nil {
+	if err := execCommand(nil, editor, selections...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
 	}
 
@@ -135,21 +148,12 @@ func CmdEdit(handler IHandler, editor string) error {
 
 // CmdWeb executes `open`
 func CmdWeb(handler IHandler, browser string) error {
-	githubDir := filepath.Join(os.Getenv("GOPATH"), "src")
-	repoDirs, err := listRepositories(githubDir)
-	if err != nil {
-		return errors.Wrap(err, "Fail to search repositories")
-	}
-
-	var selections []string
-	selectedPrompt := &survey.MultiSelect{
-		Message:  "Choose repositories you want to open:",
-		Options:  repoDirs,
-		PageSize: 15,
-	}
-	survey.AskOne(selectedPrompt, &selections, nil)
-	if len(selections) == 0 {
+	selections, err := selectLocalRepositories()
+	if selections == nil {
 		return nil
+	}
+	if err != nil {
+		return errors.Wrap(err, "Fail to select repositories.")
 	}
 
 	var urls []string
@@ -162,7 +166,7 @@ func CmdWeb(handler IHandler, browser string) error {
 		urls = append(urls, remoteURL)
 	}
 
-	if err := execCommandIO(nil, browser, urls...); err != nil {
+	if err := execCommand(nil, browser, urls...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to open repository %v", selections))
 	}
 
