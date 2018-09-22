@@ -1,8 +1,11 @@
 gowl
 ====
 
-Go tools for GitHub and Bitbucket
+Go tools for GitHub and Bitbucket.
 
+Support for both Windows and Linux.
+
+![DEMO](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo.gif)
 
 Install
 -------
