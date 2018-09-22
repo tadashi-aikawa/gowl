@@ -31,7 +31,7 @@ func main() {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
 	case args.CmdEdit:
-		if err := CmdEdit(handler, config.Tools[args.Tool]); err != nil {
+		if err := CmdEdit(handler, config.Editors[args.Editor]); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
 	case args.CmdWeb:

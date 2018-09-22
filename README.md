@@ -21,17 +21,17 @@ Gowl.
 
 Usage:
   gowl get [-s | --shallow] [-f | --force] [-B | --bitbucket-server]
-  gowl edit <tool>
+  gowl edit [-e=<editor> | --editor=<editor>]
   gowl web
   gowl list
   gowl -h | --help
   gowl --version
 
 Options:
-  <tool>                      Use tool
-  -B --bitbucket-server       Use Bitbucket Server
+  -e --editor=<editor>        Use editor [default: default]
   -s --shallow                Use shallow clone
   -f --force                  Force remove and reclone if exists
+  -B --bitbucket-server       Use Bitbucket Server
   -h --help                   Show this screen.
   --version                   Show version.
 ```
@@ -49,7 +49,7 @@ browser = "Your browser"
 # ex. C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe
 
 [tools]
-code = "code"
+default = "code"
 vim = "vim"
 
 [github]

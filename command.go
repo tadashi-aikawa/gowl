@@ -190,7 +190,7 @@ func CmdList(handler IHandler) error {
 }
 
 // CmdEdit executes `edit`
-func CmdEdit(handler IHandler, tool string) error {
+func CmdEdit(handler IHandler, editor string) error {
 	selections, err := selectLocalRepositories()
 	if selections == nil {
 		return nil
@@ -199,7 +199,7 @@ func CmdEdit(handler IHandler, tool string) error {
 		return errors.Wrap(err, "Fail to select repositories.")
 	}
 
-	if err := execCommand(nil, tool, selections...); err != nil {
+	if err := execCommand(nil, editor, selections...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
 	}
 
