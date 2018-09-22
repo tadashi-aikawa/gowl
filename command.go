@@ -111,7 +111,6 @@ func CmdEdit(handler IHandler, editor string) error {
 		return nil
 	}
 
-	// err = exec.Command(editor, selections...).Run()
 	if err := execCommandIO(nil, editor, selections...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
 	}
