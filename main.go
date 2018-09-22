@@ -25,14 +25,12 @@ func main() {
 		handler = NewGithubHandler(config)
 	}
 
-	if args.Clone {
-		err := CmdClone(handler)
-		if err != nil {
-			log.Fatal(errors.Wrap(err, "Fail to command `clone`"))
+	if args.CmdGet {
+		if err := CmdGet(handler); err != nil {
+			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
-	} else if args.Edit {
-		err := CmdEdit(handler, config.Editor)
-		if err != nil {
+	} else if args.CmdEdit {
+		if err := CmdEdit(handler, config.Editor); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
 	}

@@ -14,7 +14,7 @@ func toSelection(r Repository) string {
 	return fmt.Sprintf("*%-5v %-45v %-10v %v", r.Star, r.FullName, r.Language, r.License)
 }
 
-func loopClone(handler IHandler) (Repository, error) {
+func doRepositorySelection(handler IHandler) (Repository, error) {
 	for {
 		word := ""
 		prompt := &survey.Input{
@@ -53,9 +53,19 @@ func loopClone(handler IHandler) (Repository, error) {
 	}
 }
 
-// CmdClone
-func CmdClone(handler IHandler) error {
-	repo, err := loopClone(handler)
+func execCommandIO(workdir *string, commands ...string) error {
+	cmd := exec.Command(commands[0], commands[1:]...)
+	if workdir != nil {
+		cmd.Dir = *workdir
+	}
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
+}
+
+// CmdGet
+func CmdGet(handler IHandler) error {
+	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
 		return nil
 	}
@@ -64,15 +74,19 @@ func CmdClone(handler IHandler) error {
 	}
 
 	dst := filepath.Join(os.Getenv("GOPATH"), "src", handler.GetPrefix(), repo.FullName)
-
-	fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
-	cmd := exec.Command("git", "clone", repo.CloneURL, dst)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	err = cmd.Run()
-	if err != nil {
-		return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
+	if _, err := os.Stat(dst); os.IsNotExist(err) {
+		fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
+		if err := execCommandIO(nil, "git", "clone", repo.CloneURL, dst); err != nil {
+			return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
+		}
+	} else {
+		fmt.Printf("Pull %v\n", dst)
+		if err := execCommandIO(&dst, "git", "checkout", "master"); err != nil {
+			return errors.Wrap(err, "Fail to checkout master in "+dst)
+		}
+		if err := execCommandIO(&dst, "git", "pull"); err != nil {
+			return errors.Wrap(err, "Fail to pull in "+dst)
+		}
 	}
 
 	return nil
