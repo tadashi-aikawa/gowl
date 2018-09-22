@@ -20,7 +20,7 @@ func getRoot(config Config) string {
 
 	home, err := homedir.Dir()
 	if err == nil {
-		return filepath.Join(home, "gowlroot")
+		return filepath.Join(home, ".gowlroot")
 	}
 
 	panic("Unexpected ERROR!!")
