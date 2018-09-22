@@ -45,6 +45,8 @@ Quick start
 `.gowlconfig` is a TOML file.
 
 ```toml
+root = "Root directory of repositories for gowl"
+# ex. C:\\users\\tadashi-aikawa\\.gowl
 browser = "Your browser"
 # ex. C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe
 
@@ -87,6 +89,16 @@ For example..
 
 1. `gowl clone`
 2. `gowl edit`
+
+
+Root directory
+--------------
+
+The root directory is determined by the following priority.
+
+1. `root` in `.gowlconfig`
+2. `<GOPATH>/src`
+3. `<HOME>/.gowlroot`
 
 
 For developer
