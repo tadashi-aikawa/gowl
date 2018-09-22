@@ -62,6 +62,24 @@ password = "yourpassword"
 prefix = "your prefix in gopath (ex: mamansoft/bitbucket)"
 ```
 
+#### A minimum example
+
+```toml
+browser = "chrome"
+
+[tools]
+default = "code"
+
+[github]
+token = "your github token"
+```
+
+This file means...
+
+* Use Google Chrome as browser
+* Use VSCode as editor
+* Use GitHub only
+
 
 ### Run
 

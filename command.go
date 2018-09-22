@@ -101,28 +101,6 @@ func selectLocalRepository() (string, error) {
 	return selection, nil
 }
 
-// selectLocalRepositories returns repository paths.
-func selectLocalRepositories() ([]string, error) {
-	repoRoot := filepath.Join(os.Getenv("GOPATH"), "src")
-	repoDirs, err := listRepositories(repoRoot)
-	if err != nil {
-		return nil, errors.Wrap(err, "Fail to search repositories")
-	}
-
-	var selections []string
-	selectedPrompt := &survey.MultiSelect{
-		Message:  "Choose repositories:",
-		Options:  repoDirs,
-		PageSize: 15,
-	}
-	survey.AskOne(selectedPrompt, &selections, nil)
-	if len(selections) == 0 {
-		return nil, nil
-	}
-
-	return selections, nil
-}
-
 func clone(url string, dst string, shallow bool) error {
 	fmt.Printf("Clone %v to %v\n", url, dst)
 
@@ -191,16 +169,16 @@ func CmdList(handler IHandler) error {
 
 // CmdEdit executes `edit`
 func CmdEdit(handler IHandler, editor string) error {
-	selections, err := selectLocalRepositories()
-	if selections == nil {
+	selection, err := selectLocalRepository()
+	if selection == "" {
 		return nil
 	}
 	if err != nil {
-		return errors.Wrap(err, "Fail to select repositories.")
+		return errors.Wrap(err, "Fail to select a repository.")
 	}
 
-	if err := execCommand(nil, editor, selections...); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
+	if err := execCommand(nil, editor, selection); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selection))
 	}
 
 	return nil
@@ -208,26 +186,21 @@ func CmdEdit(handler IHandler, editor string) error {
 
 // CmdWeb executes `web`
 func CmdWeb(handler IHandler, browser string) error {
-	selections, err := selectLocalRepositories()
-	if selections == nil {
+	selection, err := selectLocalRepository()
+	if selection == "" {
 		return nil
 	}
 	if err != nil {
-		return errors.Wrap(err, "Fail to select repositories.")
+		return errors.Wrap(err, "Fail to select a repository.")
 	}
 
-	var urls []string
-	for _, s := range selections {
-		remoteURL, err := getCommandStdout(&s, "git", "config", "--get", "remote.origin.url")
-		if err != nil {
-			return errors.Wrap(err, "Fail to get remote origin URL")
-		}
-
-		urls = append(urls, remoteURL)
+	remoteURL, err := getCommandStdout(&selection, "git", "config", "--get", "remote.origin.url")
+	if err != nil {
+		return errors.Wrap(err, "Fail to get remote origin URL")
 	}
 
-	if err := execCommand(nil, browser, urls...); err != nil {
-		return errors.Wrap(err, fmt.Sprintf("Fail to open repository %v", selections))
+	if err := execCommand(nil, browser, remoteURL); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Fail to open repository %v", selection))
 	}
 
 	return nil
