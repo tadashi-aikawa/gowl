@@ -1,7 +1,7 @@
 gowl
 ====
 
-Go tools for GitHub and Bitbucket.
+An interactive git tool that works with GitHub and Bitbucket Server.
 
 Support for both Windows and Linux.
 
@@ -13,6 +13,10 @@ Install
 ```
 $ go get -u github.com/tadashi-aikawa/gowl
 ```
+
+or
+
+Download a binary from [release page](https://github.com/tadashi-aikawa/gowl/releases).
 
 
 Usage
@@ -90,7 +94,7 @@ This file means...
 
 For example..
 
-1. `gowl clone`
+1. `gowl get`
 2. `gowl edit`
 
 
