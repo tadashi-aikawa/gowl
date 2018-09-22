@@ -101,7 +101,7 @@ func selectLocalRepositories() ([]string, error) {
 }
 
 // CmdGet executes `get`
-func CmdGet(handler IHandler) error {
+func CmdGet(handler IHandler, force bool) error {
 	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
 		return nil
@@ -117,12 +117,24 @@ func CmdGet(handler IHandler) error {
 			return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
 		}
 	} else {
-		fmt.Printf("Pull %v\n", dst)
-		if err := execCommand(&dst, "git", "checkout", "master"); err != nil {
-			return errors.Wrap(err, "Fail to checkout master in "+dst)
-		}
-		if err := execCommand(&dst, "git", "pull"); err != nil {
-			return errors.Wrap(err, "Fail to pull in "+dst)
+		if force {
+			fmt.Printf("Remove %v\n", dst)
+			if err := os.RemoveAll(dst); err != nil {
+				return errors.Wrap(err, "Fail to remove "+dst)
+			}
+			fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
+			if err := execCommand(nil, "git", "clone", repo.CloneURL, dst); err != nil {
+				return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
+			}
+		} else {
+			fmt.Printf("Checkout master %v\n", dst)
+			if err := execCommand(&dst, "git", "checkout", "master"); err != nil {
+				return errors.Wrap(err, "Fail to checkout master in "+dst)
+			}
+			fmt.Printf("Pull %v\n", dst)
+			if err := execCommand(&dst, "git", "pull"); err != nil {
+				return errors.Wrap(err, "Fail to pull in "+dst)
+			}
 		}
 	}
 

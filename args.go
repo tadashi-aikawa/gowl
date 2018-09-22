@@ -9,7 +9,7 @@ const version = "0.1.0"
 const usage = `Gowl.
 
 Usage:
-  gowl get [--bitbucket-server]
+  gowl get [--bitbucket-server] [-f]
   gowl edit <editor>
   gowl web
   gowl -h | --help
@@ -18,6 +18,7 @@ Usage:
 Options:
   <editor>                    Use editor
   -B --bitbucket-server       Use Bitbucket Server
+  -f --force                  Force remove and reclone if exists
   -h --help                   Show this screen.
   --version                   Show version.
   `
@@ -30,6 +31,7 @@ type Args struct {
 
 	Editor          string `docopt:"<editor>"`
 	BitbucketServer bool   `docopt:"--bitbucket-server"`
+	Force           bool   `docopt:"--force"`
 }
 
 // CreateArgs creates Args

@@ -26,7 +26,7 @@ func main() {
 	}
 
 	if args.CmdGet {
-		if err := CmdGet(handler); err != nil {
+		if err := CmdGet(handler, args.Force); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
 	} else if args.CmdEdit {
