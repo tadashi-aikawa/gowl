@@ -119,7 +119,9 @@ func (h *BitbucketServerHandler) GetPrefix() string {
 
 // SearchRepositories search repositories.
 func (h *GitHubHandler) SearchRepositories(word string) ([]Repository, error) {
-	res, _, err := h.client.Search.Repositories(context.Background(), word, nil)
+	res, _, err := h.client.Search.Repositories(context.Background(), word, &github.SearchOptions{
+		ListOptions: github.ListOptions{PerPage: 100},
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "Fail to search repositories.")
 	}
