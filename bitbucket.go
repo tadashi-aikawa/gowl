@@ -41,11 +41,11 @@ func (r *BitbucketRepository) getFullName() string {
 }
 
 type valueLinks struct {
-	Clone []clone `json:"clone"`
-	Self  []self  `json:"self"`
+	Clone []cloneSeed `json:"clone"`
+	Self  []self      `json:"self"`
 }
 
-type clone struct {
+type cloneSeed struct {
 	Href string `json:"href"`
 	Name string `json:"name"`
 }

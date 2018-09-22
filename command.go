@@ -123,8 +123,25 @@ func selectLocalRepositories() ([]string, error) {
 	return selections, nil
 }
 
+func clone(url string, dst string, shallow bool) error {
+	fmt.Printf("Clone %v to %v\n", url, dst)
+
+	var args []string
+	if shallow {
+		args = []string{"clone", "--depth", "1", url, dst}
+	} else {
+		args = []string{"clone", url, dst}
+	}
+
+	if err := execCommand(nil, "git", args...); err != nil {
+		return errors.Wrap(err, "Fail to clone "+url)
+	}
+
+	return nil
+}
+
 // CmdGet executes `get`
-func CmdGet(handler IHandler, force bool) error {
+func CmdGet(handler IHandler, force bool, shallow bool) error {
 	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
 		return nil
@@ -135,20 +152,14 @@ func CmdGet(handler IHandler, force bool) error {
 
 	dst := filepath.Join(os.Getenv("GOPATH"), "src", handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
-		fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
-		if err := execCommand(nil, "git", "clone", repo.CloneURL, dst); err != nil {
-			return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
-		}
+		clone(repo.CloneURL, dst, shallow)
 	} else {
 		if force {
 			fmt.Printf("Remove %v\n", dst)
 			if err := os.RemoveAll(dst); err != nil {
 				return errors.Wrap(err, "Fail to remove "+dst)
 			}
-			fmt.Printf("Clone %v to %v\n", repo.CloneURL, dst)
-			if err := execCommand(nil, "git", "clone", repo.CloneURL, dst); err != nil {
-				return errors.Wrap(err, "Fail to clone "+repo.CloneURL)
-			}
+			clone(repo.CloneURL, dst, shallow)
 		} else {
 			fmt.Printf("Checkout master %v\n", dst)
 			if err := execCommand(&dst, "git", "checkout", "master"); err != nil {
