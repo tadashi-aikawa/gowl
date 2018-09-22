@@ -85,8 +85,8 @@ func getCommandStdout(workdir *string, name string, arg ...string) (string, erro
 }
 
 // selectLocalRepository returns repository path.
-func selectLocalRepository() (string, error) {
-	repoRoot := filepath.Join(os.Getenv("GOPATH"), "src")
+func selectLocalRepository(root string) (string, error) {
+	repoRoot := filepath.Join(root)
 	repoDirs, err := listRepositories(repoRoot)
 	if err != nil {
 		return "", errors.Wrap(err, "Fail to search repositories")
@@ -125,7 +125,7 @@ func clone(url string, dst string, shallow bool) error {
 }
 
 // CmdGet executes `get`
-func CmdGet(handler IHandler, force bool, shallow bool) error {
+func CmdGet(handler IHandler, root string, force bool, shallow bool) error {
 	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
 		return nil
@@ -134,7 +134,7 @@ func CmdGet(handler IHandler, force bool, shallow bool) error {
 		return err
 	}
 
-	dst := filepath.Join(os.Getenv("GOPATH"), "src", handler.GetPrefix(), repo.FullName)
+	dst := filepath.Join(root, handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
 		clone(repo.CloneURL, dst, shallow)
 	} else {
@@ -160,8 +160,8 @@ func CmdGet(handler IHandler, force bool, shallow bool) error {
 }
 
 // CmdList executes `open`
-func CmdList(handler IHandler) error {
-	selection, err := selectLocalRepository()
+func CmdList(handler IHandler, root string) error {
+	selection, err := selectLocalRepository(root)
 	if selection == "" {
 		return nil
 	}
@@ -174,8 +174,8 @@ func CmdList(handler IHandler) error {
 }
 
 // CmdEdit executes `edit`
-func CmdEdit(handler IHandler, editor string) error {
-	selection, err := selectLocalRepository()
+func CmdEdit(handler IHandler, root string, editor string) error {
+	selection, err := selectLocalRepository(root)
 	if selection == "" {
 		return nil
 	}
@@ -191,8 +191,8 @@ func CmdEdit(handler IHandler, editor string) error {
 }
 
 // CmdWeb executes `web`
-func CmdWeb(handler IHandler, browser string) error {
-	selection, err := selectLocalRepository()
+func CmdWeb(handler IHandler, root string, browser string) error {
+	selection, err := selectLocalRepository(root)
 	if selection == "" {
 		return nil
 	}
