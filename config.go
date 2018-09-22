@@ -20,6 +20,7 @@ type Service struct {
 // Config configuration
 type Config struct {
 	Editors         map[string]string
+	Browser         string
 	GitHub          Service
 	BitbucketServer Service
 }

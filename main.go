@@ -33,5 +33,9 @@ func main() {
 		if err := CmdEdit(handler, config.Editors[args.Editor]); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
+	} else if args.CmdWeb {
+		if err := CmdWeb(handler, config.Browser); err != nil {
+			log.Fatal(errors.Wrap(err, "Fail to command `open`"))
+		}
 	}
 }

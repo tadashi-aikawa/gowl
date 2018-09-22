@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 
 	"github.com/pkg/errors"
 	survey "gopkg.in/AlecAivazis/survey.v1"
@@ -63,6 +64,20 @@ func execCommandIO(workdir *string, name string, arg ...string) error {
 	return cmd.Run()
 }
 
+func getCommandStdout(workdir *string, name string, arg ...string) (string, error) {
+	cmd := exec.Command(name, arg...)
+	if workdir != nil {
+		cmd.Dir = *workdir
+	}
+
+	out, err := cmd.Output()
+	if err != nil {
+		return "", errors.Wrapf(err, "Fail to command: %v %v in %v", name, strings.Join(arg, " "), *workdir)
+	}
+
+	return string(out), nil
+}
+
 // CmdGet executes `get`
 func CmdGet(handler IHandler) error {
 	repo, err := doRepositorySelection(handler)
@@ -113,6 +128,42 @@ func CmdEdit(handler IHandler, editor string) error {
 
 	if err := execCommandIO(nil, editor, selections...); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selections))
+	}
+
+	return nil
+}
+
+// CmdWeb executes `open`
+func CmdWeb(handler IHandler, browser string) error {
+	githubDir := filepath.Join(os.Getenv("GOPATH"), "src")
+	repoDirs, err := listRepositories(githubDir)
+	if err != nil {
+		return errors.Wrap(err, "Fail to search repositories")
+	}
+
+	var selections []string
+	selectedPrompt := &survey.MultiSelect{
+		Message:  "Choose repositories you want to open:",
+		Options:  repoDirs,
+		PageSize: 15,
+	}
+	survey.AskOne(selectedPrompt, &selections, nil)
+	if len(selections) == 0 {
+		return nil
+	}
+
+	var urls []string
+	for _, s := range selections {
+		remoteURL, err := getCommandStdout(&s, "git", "config", "--get", "remote.origin.url")
+		if err != nil {
+			return errors.Wrap(err, "Fail to get remote origin URL")
+		}
+
+		urls = append(urls, remoteURL)
+	}
+
+	if err := execCommandIO(nil, browser, urls...); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Fail to open repository %v", selections))
 	}
 
 	return nil

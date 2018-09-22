@@ -16,12 +16,13 @@ Usage
 -----
 
 ```
-$ gowl -h
+$ gowl --help
 Gowl.
 
 Usage:
   gowl get [--bitbucket-server]
   gowl edit <editor>
+  gowl web
   gowl -h | --help
   gowl --version
 
