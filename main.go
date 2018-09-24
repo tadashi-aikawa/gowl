@@ -46,7 +46,7 @@ func main() {
 
 	switch true {
 	case args.CmdGet:
-		if err := CmdGet(handler, getRoot(config), args.Force, args.Shallow); err != nil {
+		if err := CmdGet(handler, getRoot(config), args.Force, args.Shallow, args.Recursive); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
 	case args.CmdEdit:

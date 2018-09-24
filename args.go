@@ -9,7 +9,7 @@ const version = "0.2.0-alpha"
 const usage = `Gowl.
 
 Usage:
-  gowl get [-s | --shallow] [-f | --force] [-B | --bitbucket-server]
+  gowl get [-f | --force] [-r | --recursive] [-s | --shallow] [-B | --bitbucket-server]
   gowl edit [-e=<editor> | --editor=<editor>]
   gowl web
   gowl list
@@ -18,8 +18,9 @@ Usage:
 
 Options:
   -e --editor=<editor>        Use editor [default: default]
-  -s --shallow                Use shallow clone
   -f --force                  Force remove and reclone if exists
+  -r --recursive              Clone recursively
+  -s --shallow                Use shallow clone
   -B --bitbucket-server       Use Bitbucket Server
   -h --help                   Show this screen.
   --version                   Show version.
@@ -33,9 +34,10 @@ type Args struct {
 	CmdList bool `docopt:"list"`
 
 	Editor          string `docopt:"--editor"`
-	BitbucketServer bool   `docopt:"--bitbucket-server"`
 	Force           bool   `docopt:"--force"`
+	Recursive       bool   `docopt:"--recursive"`
 	Shallow         bool   `docopt:"--shallow"`
+	BitbucketServer bool   `docopt:"--bitbucket-server"`
 }
 
 // CreateArgs creates Args

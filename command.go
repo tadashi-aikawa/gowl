@@ -107,15 +107,16 @@ func selectLocalRepository(root string) (string, error) {
 	return selection, nil
 }
 
-func clone(url string, dst string, shallow bool) error {
-	fmt.Printf("Clone %v to %v\n", url, dst)
-
-	var args []string
+func clone(url string, dst string, shallow bool, recursive bool) error {
+	args := []string{"clone"}
 	if shallow {
-		args = []string{"clone", "--depth", "1", url, dst}
-	} else {
-		args = []string{"clone", url, dst}
+		args = append(args, "--depth", "1")
 	}
+	if recursive {
+		args = append(args, "--recursive")
+	}
+	args = append(args, url, dst)
+	fmt.Printf("Exec: %v\n", strings.Join(args, " "))
 
 	if err := execCommand(nil, "git", args...); err != nil {
 		return errors.Wrap(err, "Fail to clone "+url)
@@ -125,7 +126,7 @@ func clone(url string, dst string, shallow bool) error {
 }
 
 // CmdGet executes `get`
-func CmdGet(handler IHandler, root string, force bool, shallow bool) error {
+func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive bool) error {
 	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
 		return nil
@@ -136,14 +137,14 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool) error {
 
 	dst := filepath.Join(root, handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
-		clone(repo.CloneURL, dst, shallow)
+		clone(repo.CloneURL, dst, shallow, recursive)
 	} else {
 		if force {
 			fmt.Printf("Remove %v\n", dst)
 			if err := os.RemoveAll(dst); err != nil {
 				return errors.Wrap(err, "Fail to remove "+dst)
 			}
-			clone(repo.CloneURL, dst, shallow)
+			clone(repo.CloneURL, dst, shallow, recursive)
 		} else {
 			fmt.Printf("Checkout master %v\n", dst)
 			if err := execCommand(&dst, "git", "checkout", "master"); err != nil {
