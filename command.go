@@ -65,6 +65,7 @@ func execCommand(workdir *string, name string, arg ...string) error {
 	if workdir != nil {
 		cmd.Dir = *workdir
 	}
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -184,7 +185,7 @@ func CmdEdit(handler IHandler, root string, editor string) error {
 		return errors.Wrap(err, "Fail to select a repository.")
 	}
 
-	if err := execCommand(nil, editor, selection); err != nil {
+	if err := execCommand(&selection, editor); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selection))
 	}
 
