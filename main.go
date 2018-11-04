@@ -44,7 +44,7 @@ func main() {
 		handler = NewGithubHandler(config)
 	}
 
-	switch true {
+	switch {
 	case args.CmdGet:
 		if err := CmdGet(handler, getRoot(config), args.Force, args.Shallow, args.Recursive); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
