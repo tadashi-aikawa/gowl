@@ -163,15 +163,12 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 
 // CmdList executes `open`
 func CmdList(handler IHandler, root string) error {
-	selection, err := selectLocalRepository(root)
-	if selection == "" {
-		return nil
-	}
+	repositories, err := listRepositories(root)
 	if err != nil {
-		return errors.Wrap(err, "Fail to select a repository.")
+		return errors.Wrap(err, "Fail to search repository.")
 	}
 
-	fmt.Println(selection)
+	fmt.Println(strings.Join(repositories, "\n"))
 	return nil
 }
 
