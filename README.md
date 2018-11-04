@@ -1,6 +1,8 @@
 gowl
 ====
 
+![](https://img.shields.io/github/release/tadashi-aikawa/gowl.svg)
+
 An interactive git tool that works with GitHub and Bitbucket Server.
 
 Support for both Windows and Linux.

@@ -65,6 +65,7 @@ func execCommand(workdir *string, name string, arg ...string) error {
 	if workdir != nil {
 		cmd.Dir = *workdir
 	}
+	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
@@ -107,15 +108,16 @@ func selectLocalRepository(root string) (string, error) {
 	return selection, nil
 }
 
-func clone(url string, dst string, shallow bool) error {
-	fmt.Printf("Clone %v to %v\n", url, dst)
-
-	var args []string
+func clone(url string, dst string, shallow bool, recursive bool) error {
+	args := []string{"clone"}
 	if shallow {
-		args = []string{"clone", "--depth", "1", url, dst}
-	} else {
-		args = []string{"clone", url, dst}
+		args = append(args, "--depth", "1")
 	}
+	if recursive {
+		args = append(args, "--recursive")
+	}
+	args = append(args, url, dst)
+	fmt.Printf("Exec: %v\n", strings.Join(args, " "))
 
 	if err := execCommand(nil, "git", args...); err != nil {
 		return errors.Wrap(err, "Fail to clone "+url)
@@ -125,7 +127,7 @@ func clone(url string, dst string, shallow bool) error {
 }
 
 // CmdGet executes `get`
-func CmdGet(handler IHandler, root string, force bool, shallow bool) error {
+func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive bool) error {
 	repo, err := doRepositorySelection(handler)
 	if repo.FullName == "" {
 		return nil
@@ -136,14 +138,14 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool) error {
 
 	dst := filepath.Join(root, handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
-		clone(repo.CloneURL, dst, shallow)
+		clone(repo.CloneURL, dst, shallow, recursive)
 	} else {
 		if force {
 			fmt.Printf("Remove %v\n", dst)
 			if err := os.RemoveAll(dst); err != nil {
 				return errors.Wrap(err, "Fail to remove "+dst)
 			}
-			clone(repo.CloneURL, dst, shallow)
+			clone(repo.CloneURL, dst, shallow, recursive)
 		} else {
 			fmt.Printf("Checkout master %v\n", dst)
 			if err := execCommand(&dst, "git", "checkout", "master"); err != nil {
@@ -161,15 +163,12 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool) error {
 
 // CmdList executes `open`
 func CmdList(handler IHandler, root string) error {
-	selection, err := selectLocalRepository(root)
-	if selection == "" {
-		return nil
-	}
+	repositories, err := listRepositories(root)
 	if err != nil {
-		return errors.Wrap(err, "Fail to select a repository.")
+		return errors.Wrap(err, "Fail to search repository.")
 	}
 
-	fmt.Println(selection)
+	fmt.Println(strings.Join(repositories, "\n"))
 	return nil
 }
 
@@ -183,7 +182,7 @@ func CmdEdit(handler IHandler, root string, editor string) error {
 		return errors.Wrap(err, "Fail to select a repository.")
 	}
 
-	if err := execCommand(nil, editor, selection); err != nil {
+	if err := execCommand(&selection, editor); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selection))
 	}
 
