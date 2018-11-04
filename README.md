@@ -57,7 +57,7 @@ root = "Root directory of repositories for gowl"
 browser = "Your browser"
 # ex. C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe
 
-[tools]
+[editors]
 default = "code"
 vim = "vim"
 
@@ -76,7 +76,7 @@ prefix = "your prefix in gopath (ex: mamansoft/bitbucket)"
 ```toml
 browser = "chrome"
 
-[tools]
+[editors]
 default = "code"
 
 [github]
