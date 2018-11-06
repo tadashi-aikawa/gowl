@@ -14,7 +14,7 @@ Usage:
   gowl web
   gowl list
   gowl -h | --help
-  gowl --version
+  gowl -V | --version
 
 Options:
   -e --editor=<editor>        Use editor [default: default]
@@ -23,7 +23,7 @@ Options:
   -s --shallow                Use shallow clone
   -B --bitbucket-server       Use Bitbucket Server
   -h --help                   Show this screen.
-  --version                   Show version.
+  -V --version                Show version.
   `
 
 // Args created by CLI args
