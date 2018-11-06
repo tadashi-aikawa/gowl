@@ -31,7 +31,8 @@ func (r *Repository) fromGithub(gr *github.Repository) *Repository {
 
 func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
 	return &Repository{
-		FullName: bsr.getFullName(),
+		// Lower case for Bitbucket Server
+		FullName: bsr.GetFullName(),
 		CloneURL: bsr.Links.Clone[0].Href,
 		Language: "UNKNOWN",
 		License:  "No License",
