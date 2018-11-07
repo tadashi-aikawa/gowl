@@ -12,38 +12,45 @@ import (
 
 // Repository used by gowl
 type Repository struct {
-	FullName string
-	CloneURL string
-	Language string
-	License  string
-	Star     int
+	FullName     string
+	SSHCloneURL  string
+	HTTPCloneURL string
+	Language     string
+	License      string
+	Star         int
 }
 
 func (r *Repository) fromGithub(gr *github.Repository) *Repository {
 	return &Repository{
-		FullName: gr.GetFullName(),
-		CloneURL: gr.GetCloneURL(),
-		Language: gr.GetLanguage(),
-		License:  gr.GetLicense().GetName(),
-		Star:     gr.GetStargazersCount(),
+		FullName:     gr.GetFullName(),
+		SSHCloneURL:  gr.GetSSHURL(),
+		HTTPCloneURL: gr.GetCloneURL(),
+		Language:     gr.GetLanguage(),
+		License:      gr.GetLicense().GetName(),
+		Star:         gr.GetStargazersCount(),
 	}
 }
 
 func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
 	// TODO: ssh option
 	var httpURL string
+	var sshURL string
 	for _, x := range bsr.Links.Clone {
-		if x.Name == "ssh" {
+		switch x.Name {
+		case "ssh":
+			sshURL = x.Href
+		case "http":
 			httpURL = x.Href
 		}
 	}
 	return &Repository{
 		// Lower case for Bitbucket Server
-		FullName: bsr.GetFullName(),
-		CloneURL: httpURL,
-		Language: "UNKNOWN",
-		License:  "No License",
-		Star:     0,
+		FullName:     bsr.GetFullName(),
+		SSHCloneURL:  sshURL,
+		HTTPCloneURL: httpURL,
+		Language:     "UNKNOWN",
+		License:      "No License",
+		Star:         0,
 	}
 }
 
@@ -51,18 +58,21 @@ func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
 type IHandler interface {
 	SearchRepositories(word string) ([]Repository, error)
 	GetPrefix() string
+	GetUseSSH() bool
 }
 
 // GitHubHandler handles a github command.
 type GitHubHandler struct {
 	client *github.Client
 	prefix string
+	useSSH bool
 }
 
 // BitbucketServerHandler handles a bitbucket command.
 type BitbucketServerHandler struct {
 	client *BitbucketClient
 	prefix string
+	useSSH bool
 }
 
 func createBitbucketClient(userName string, password string, baseURL string) *BitbucketClient {
@@ -104,6 +114,7 @@ func NewGithubHandler(config Config) IHandler {
 	return &GitHubHandler{
 		client: createGithubClient(*config.GitHub.Token),
 		prefix: "github.com",
+		useSSH: config.GitHub.UseSSH,
 	}
 }
 
@@ -112,6 +123,7 @@ func NewBitbucketServerHandler(config Config) IHandler {
 	return &BitbucketServerHandler{
 		client: createBitbucketClient(*config.BitbucketServer.UserName, *config.BitbucketServer.Password, *config.BitbucketServer.BaseURL),
 		prefix: *config.BitbucketServer.Prefix,
+		useSSH: config.BitbucketServer.UseSSH,
 	}
 }
 
@@ -123,6 +135,16 @@ func (h *GitHubHandler) GetPrefix() string {
 // GetPrefix gets prefix for local repository locastions
 func (h *BitbucketServerHandler) GetPrefix() string {
 	return h.prefix
+}
+
+// GetUseSSH gets whether use useSSH or not
+func (h *GitHubHandler) GetUseSSH() bool {
+	return h.useSSH
+}
+
+// GetUseSSH gets whether use useSSH or not
+func (h *BitbucketServerHandler) GetUseSSH() bool {
+	return h.useSSH
 }
 
 // SearchRepositories search repositories.

@@ -71,6 +71,7 @@ baseurl = "http://your.bitbucket.server.url"
 username = "yourname"
 password = "yourpassword"
 prefix = "your prefix in gopath (ex: mamansoft/bitbucket)"
+useSSH = true
 ```
 
 #### A minimum example
