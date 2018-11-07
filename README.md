@@ -101,6 +101,15 @@ For example..
 2. `gowl edit`
 
 
+Configuration
+-------------
+
+Gowl uses toml format as a configuration file.  
+Please check `config.go`.
+
+TODO: Definition table
+
+
 Root directory
 --------------
 
@@ -109,6 +118,24 @@ The root directory is determined by the following priority.
 1. `root` in `.gowlconfig`
 2. `<GOPATH>/src`
 3. `<HOME>/.gowlroot`
+
+
+Other
+-----
+
+If you use fzf(or peco), the following setting may make you happy!
+
+bash
+```
+alias cdg="cd $(gowl list | fzf)"
+```
+
+fish
+```
+alias cdg "cd (gowl list | fzf)"
+```
+
+![DEMO2](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo2.gif)
 
 
 For developer
