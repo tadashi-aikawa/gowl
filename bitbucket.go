@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 // BitbucketClient includes fields used by gowl
@@ -36,8 +37,10 @@ type BitbucketRepository struct {
 	Links         valueLinks `json:"links"`
 }
 
-func (r *BitbucketRepository) getFullName() string {
-	return fmt.Sprintf("%v/%v", r.Project.Key, r.Slug)
+// GetFullName returns project/repository
+func (r *BitbucketRepository) GetFullName() string {
+	// Slug is always lowercase
+	return fmt.Sprintf("%v/%v", strings.ToLower(r.Project.Key), r.Slug)
 }
 
 type valueLinks struct {

@@ -30,9 +30,17 @@ func (r *Repository) fromGithub(gr *github.Repository) *Repository {
 }
 
 func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
+	// TODO: ssh option
+	var httpURL string
+	for _, x := range bsr.Links.Clone {
+		if x.Name == "ssh" {
+			httpURL = x.Href
+		}
+	}
 	return &Repository{
-		FullName: bsr.getFullName(),
-		CloneURL: bsr.Links.Clone[0].Href,
+		// Lower case for Bitbucket Server
+		FullName: bsr.GetFullName(),
+		CloneURL: httpURL,
 		Language: "UNKNOWN",
 		License:  "No License",
 		Star:     0,
