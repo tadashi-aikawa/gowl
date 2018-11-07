@@ -37,7 +37,7 @@ release: clean-package
 	tar zfc dist/gowl-$(version)-x86_64-linux.tar.gz dist/gowl --remove-files
 	@echo 'Windows...'
 	make package-windows
-	zip dist/gowl-$(version)-x86_64-windows.zip dist/gowl.exe
+	7z a dist/gowl-$(version)-x86_64-windows.zip dist/gowl.exe
 	rm -rf dist/gowl.exe
 
 	@echo '3. Staging and commit'
