@@ -136,16 +136,22 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 		return err
 	}
 
+	var cloneURL string
+	if handler.GetUseSSH() {
+		cloneURL = repo.SSHCloneURL
+	} else {
+		cloneURL = repo.HTTPCloneURL
+	}
 	dst := filepath.Join(root, handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
-		clone(repo.CloneURL, dst, shallow, recursive)
+		clone(cloneURL, dst, shallow, recursive)
 	} else {
 		if force {
 			fmt.Printf("Remove %v\n", dst)
 			if err := os.RemoveAll(dst); err != nil {
 				return errors.Wrap(err, "Fail to remove "+dst)
 			}
-			clone(repo.CloneURL, dst, shallow, recursive)
+			clone(cloneURL, dst, shallow, recursive)
 		} else {
 			fmt.Printf("Checkout master %v\n", dst)
 			if err := execCommand(&dst, "git", "checkout", "master"); err != nil {

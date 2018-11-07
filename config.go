@@ -15,6 +15,7 @@ type Service struct {
 	Password *string
 	BaseURL  *string
 	Prefix   *string
+	UseSSH   bool
 }
 
 // Config configuration
