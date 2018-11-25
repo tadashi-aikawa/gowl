@@ -65,6 +65,10 @@ vim = "vim"
 
 [github]
 token = "your github token"
+# If `overrideUser = true`, Add userName and mailAddress to `.git/config` (`user.name` and `user.email`)
+overrideUser = true
+userName = "your github account name"
+mailAddress = "your github email address"
 
 [bitbucketserver]
 baseurl = "http://your.bitbucket.server.url"
@@ -101,6 +105,15 @@ For example..
 2. `gowl edit`
 
 
+Configuration
+-------------
+
+Gowl uses toml format as a configuration file.  
+Please check `config.go`.
+
+TODO: Definition table
+
+
 Root directory
 --------------
 
@@ -109,6 +122,24 @@ The root directory is determined by the following priority.
 1. `root` in `.gowlconfig`
 2. `<GOPATH>/src`
 3. `<HOME>/.gowlroot`
+
+
+Other
+-----
+
+If you use fzf(or peco), the following setting may make you happy!
+
+bash
+```
+alias cdg="cd $(gowl list | fzf)"
+```
+
+fish
+```
+alias cdg "cd (gowl list | fzf)"
+```
+
+![DEMO2](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo2.gif)
 
 
 For developer
@@ -123,4 +154,21 @@ For developer
 
 ```
 $ dep ensure
+```
+
+### Release
+
+#### Requirements
+
+* make
+* bash
+* dep
+* ghr
+
+#### Packaging and deploy
+
+Confirm that your branch name equals release version, then...
+
+```
+$ make release
 ```

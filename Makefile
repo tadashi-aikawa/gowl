@@ -16,18 +16,18 @@ version := $(shell git rev-parse --abbrev-ref HEAD)
 
 #------
 
-package-windows:
+package-windows: ## Create gowl.exe for Windows.
 	@mkdir -p dist
 	GOOS=windows GOARCH=amd64 go build -o dist/gowl.exe
 
-package-linux:
+package-linux: ## Create gowl for Linux.
 	@mkdir -p dist
 	GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/gowl
 
-clean-package:
+clean-package: ## Remove packages with dist.
 	rm -rf dist
 
-release: clean-package
+release: clean-package ## Build and upload packages, regarding branch name as version
 	@echo '1. Update versions'
 	@sed -i -r 's/const version = ".+"/const version = "$(version)"/g' args.go
 
