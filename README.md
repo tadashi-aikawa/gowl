@@ -65,6 +65,10 @@ vim = "vim"
 
 [github]
 token = "your github token"
+# If `overrideUser = true`, Add userName and mailAddress to `.git/config` (`user.name` and `user.email`)
+overrideUser = true
+userName = "your github account name"
+mailAddress = "your github email address"
 
 [bitbucketserver]
 baseurl = "http://your.bitbucket.server.url"

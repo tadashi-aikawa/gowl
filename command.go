@@ -126,6 +126,24 @@ func clone(url string, dst string, shallow bool, recursive bool) error {
 	return nil
 }
 
+func configureUser(dir string, name, mailAddress *string) error {
+	if name != nil {
+		fmt.Printf("Exec: git config user.name %v\n", *name)
+		if err := execCommand(&dir, "git", "config", "user.name", *name); err != nil {
+			return errors.Wrap(err, "Fail to config user.name "+*name)
+		}
+	}
+
+	if mailAddress != nil {
+		fmt.Printf("Exec: git config user.email %v\n", *mailAddress)
+		if err := execCommand(&dir, "git", "config", "user.email", *mailAddress); err != nil {
+			return errors.Wrap(err, "Fail to config user.email "+*mailAddress)
+		}
+	}
+
+	return nil
+}
+
 // CmdGet executes `get`
 func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive bool) error {
 	repo, err := doRepositorySelection(handler)
@@ -145,6 +163,11 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 	dst := filepath.Join(root, handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
 		clone(cloneURL, dst, shallow, recursive)
+		if handler.GetOverrideUser() {
+			if err := configureUser(dst, handler.GetUserName(), handler.GetMailAddress()); err != nil {
+				return errors.Wrap(err, "Fail to configure "+dst)
+			}
+		}
 	} else {
 		if force {
 			fmt.Printf("Remove %v\n", dst)
@@ -152,6 +175,11 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 				return errors.Wrap(err, "Fail to remove "+dst)
 			}
 			clone(cloneURL, dst, shallow, recursive)
+			if handler.GetOverrideUser() {
+				if err := configureUser(dst, handler.GetUserName(), handler.GetMailAddress()); err != nil {
+					return errors.Wrap(err, "Fail to configure "+dst)
+				}
+			}
 		} else {
 			fmt.Printf("Checkout master %v\n", dst)
 			if err := execCommand(&dst, "git", "checkout", "master"); err != nil {

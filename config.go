@@ -10,12 +10,14 @@ import (
 
 // Service is information of Github, Bitbucket, and so on.
 type Service struct {
-	Token    *string
-	UserName *string
-	Password *string
-	BaseURL  *string
-	Prefix   *string
-	UseSSH   bool
+	Token        *string
+	UserName     *string
+	Password     *string
+	MailAddress  *string
+	BaseURL      *string
+	Prefix       *string
+	UseSSH       bool
+	OverrideUser bool
 }
 
 // Config configuration

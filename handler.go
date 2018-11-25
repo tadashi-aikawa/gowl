@@ -58,21 +58,30 @@ func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
 type IHandler interface {
 	SearchRepositories(word string) ([]Repository, error)
 	GetPrefix() string
+	GetUserName() *string
+	GetMailAddress() *string
 	GetUseSSH() bool
+	GetOverrideUser() bool
 }
 
 // GitHubHandler handles a github command.
 type GitHubHandler struct {
-	client *github.Client
-	prefix string
-	useSSH bool
+	client       *github.Client
+	prefix       string
+	userName     *string
+	mailAddress  *string
+	useSSH       bool
+	overrideUser bool
 }
 
 // BitbucketServerHandler handles a bitbucket command.
 type BitbucketServerHandler struct {
-	client *BitbucketClient
-	prefix string
-	useSSH bool
+	client       *BitbucketClient
+	prefix       string
+	userName     *string
+	mailAddress  *string
+	useSSH       bool
+	overrideUser bool
 }
 
 func createBitbucketClient(userName string, password string, baseURL string) *BitbucketClient {
@@ -112,18 +121,24 @@ func listRepositories(dir string) ([]string, error) {
 // NewGithubHandler creates Githubhandler
 func NewGithubHandler(config Config) IHandler {
 	return &GitHubHandler{
-		client: createGithubClient(*config.GitHub.Token),
-		prefix: "github.com",
-		useSSH: config.GitHub.UseSSH,
+		client:       createGithubClient(*config.GitHub.Token),
+		prefix:       "github.com",
+		userName:     config.GitHub.UserName,
+		mailAddress:  config.GitHub.MailAddress,
+		useSSH:       config.GitHub.UseSSH,
+		overrideUser: config.GitHub.OverrideUser,
 	}
 }
 
 // NewBitbucketServerHandler creates BitbucketServerHandler
 func NewBitbucketServerHandler(config Config) IHandler {
 	return &BitbucketServerHandler{
-		client: createBitbucketClient(*config.BitbucketServer.UserName, *config.BitbucketServer.Password, *config.BitbucketServer.BaseURL),
-		prefix: *config.BitbucketServer.Prefix,
-		useSSH: config.BitbucketServer.UseSSH,
+		client:       createBitbucketClient(*config.BitbucketServer.UserName, *config.BitbucketServer.Password, *config.BitbucketServer.BaseURL),
+		prefix:       *config.BitbucketServer.Prefix,
+		userName:     config.BitbucketServer.UserName,
+		mailAddress:  config.BitbucketServer.MailAddress,
+		useSSH:       config.BitbucketServer.UseSSH,
+		overrideUser: config.BitbucketServer.OverrideUser,
 	}
 }
 
@@ -137,6 +152,26 @@ func (h *BitbucketServerHandler) GetPrefix() string {
 	return h.prefix
 }
 
+// GetUserName gets user name
+func (h *GitHubHandler) GetUserName() *string {
+	return h.userName
+}
+
+// GetUserName gets user name
+func (h *BitbucketServerHandler) GetUserName() *string {
+	return h.userName
+}
+
+// GetMailAddress gets user mail address
+func (h *GitHubHandler) GetMailAddress() *string {
+	return h.mailAddress
+}
+
+// GetMailAddress gets user mail address
+func (h *BitbucketServerHandler) GetMailAddress() *string {
+	return h.mailAddress
+}
+
 // GetUseSSH gets whether use useSSH or not
 func (h *GitHubHandler) GetUseSSH() bool {
 	return h.useSSH
@@ -145,6 +180,16 @@ func (h *GitHubHandler) GetUseSSH() bool {
 // GetUseSSH gets whether use useSSH or not
 func (h *BitbucketServerHandler) GetUseSSH() bool {
 	return h.useSSH
+}
+
+// GetOverrideUser returns OverrideUser
+func (h *GitHubHandler) GetOverrideUser() bool {
+	return h.overrideUser
+}
+
+// GetOverrideUser returns OverrideUser
+func (h *BitbucketServerHandler) GetOverrideUser() bool {
+	return h.overrideUser
 }
 
 // SearchRepositories search repositories.
