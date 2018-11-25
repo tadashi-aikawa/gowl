@@ -155,3 +155,20 @@ For developer
 ```
 $ dep ensure
 ```
+
+### Release
+
+#### Requirements
+
+* make
+* bash
+* dep
+* ghr
+
+#### Packaging and deploy
+
+Confirm that your branch name equals release version, then...
+
+```
+$ make release
+```
