@@ -44,13 +44,10 @@ release: clean-package ## Build and upload packages, regarding branch name as ve
 	git add args.go
 	git commit -m ':package: Version $(version)'
 
-	@echo '4. Tags'
-	git tag v$(version) -m v$(version)
-
-	@echo '5. Push'
+	@echo '4. Push'
 	git push
 
-	@echo '6. Deploy package'
+	@echo '5. Deploy package'
 	ghr v$(version) dist/
 
 	@echo 'Success All!!'
