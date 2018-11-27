@@ -15,6 +15,7 @@ type Repository struct {
 	FullName     string
 	SSHCloneURL  string
 	HTTPCloneURL string
+	SiteURL      string
 	Language     string
 	License      string
 	Star         int
@@ -25,6 +26,7 @@ func (r *Repository) fromGithub(gr *github.Repository) *Repository {
 		FullName:     gr.GetFullName(),
 		SSHCloneURL:  gr.GetSSHURL(),
 		HTTPCloneURL: gr.GetCloneURL(),
+		SiteURL:      gr.GetHTMLURL(),
 		Language:     gr.GetLanguage(),
 		License:      gr.GetLicense().GetName(),
 		Star:         gr.GetStargazersCount(),
@@ -48,6 +50,7 @@ func (r *Repository) fromBitbucketServer(bsr *BitbucketRepository) *Repository {
 		FullName:     bsr.GetFullName(),
 		SSHCloneURL:  sshURL,
 		HTTPCloneURL: httpURL,
+		SiteURL:      bsr.Links.Self[0].Href,
 		Language:     "UNKNOWN",
 		License:      "No License",
 		Star:         0,

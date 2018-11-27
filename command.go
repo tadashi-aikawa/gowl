@@ -13,6 +13,8 @@ import (
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
 
+const gowlSite = "gowl.site"
+
 func toSelection(r Repository) string {
 	return fmt.Sprintf("*%-5v %-45v %-10v %v", r.Star, r.FullName, r.Language, r.License)
 }
@@ -163,6 +165,9 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 	dst := filepath.Join(root, handler.GetPrefix(), repo.FullName)
 	if _, err := os.Stat(dst); os.IsNotExist(err) {
 		clone(cloneURL, dst, shallow, recursive)
+		if err := execCommand(&dst, "git", "config", gowlSite, repo.SiteURL); err != nil {
+			return errors.Wrap(err, "Fail to config gowl.site "+repo.SiteURL)
+		}
 		if handler.GetOverrideUser() {
 			if err := configureUser(dst, handler.GetUserName(), handler.GetMailAddress()); err != nil {
 				return errors.Wrap(err, "Fail to configure "+dst)
@@ -175,6 +180,9 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 				return errors.Wrap(err, "Fail to remove "+dst)
 			}
 			clone(cloneURL, dst, shallow, recursive)
+			if err := execCommand(&dst, "git", "config", gowlSite, repo.SiteURL); err != nil {
+				return errors.Wrap(err, "Fail to config gowl.site "+repo.SiteURL)
+			}
 			if handler.GetOverrideUser() {
 				if err := configureUser(dst, handler.GetUserName(), handler.GetMailAddress()); err != nil {
 					return errors.Wrap(err, "Fail to configure "+dst)
@@ -233,12 +241,15 @@ func CmdWeb(handler IHandler, root string, browser string) error {
 		return errors.Wrap(err, "Fail to select a repository.")
 	}
 
-	remoteURL, err := getCommandStdout(&selection, "git", "config", "--get", "remote.origin.url")
+	siteURL, err := getCommandStdout(&selection, "git", "config", "--get", "gowl.site")
+	if siteURL == "" {
+		return errors.Wrap(err, "Site URL is not set. [gowl.site in .git/config]")
+	}
 	if err != nil {
-		return errors.Wrap(err, "Fail to get remote origin URL")
+		return errors.Wrap(err, "Fail to get site URL")
 	}
 
-	if err := execCommand(nil, browser, remoteURL); err != nil {
+	if err := execCommand(nil, browser, siteURL); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to open repository %v", selection))
 	}
 
