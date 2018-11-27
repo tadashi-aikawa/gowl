@@ -59,5 +59,5 @@ release: clean-package ## Build and upload packages, regarding branch name as ve
 	@echo 'https://github.com/tadashi-aikawa/gowl/compare/$(branch_version)?expand=1'
 	@echo '..And deploy package!!'
 
-deploy: guard-version ## Deploy packages (Required: $version. ex: 0.5.1)
+deploy: guard-version ## Deploy packages [Required: $version. ex. 0.5.1]
 	ghr v$(version) dist/
