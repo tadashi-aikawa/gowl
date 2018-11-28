@@ -41,7 +41,7 @@ type Args struct {
 }
 
 // CreateArgs creates Args
-func CreateArgs(usage string, argv []string, version string) (Args, error) {
+func CreateArgs(usage string, argv []string, version string) (Args, bool, error) {
 	parser := &docopt.Parser{
 		HelpHandler:  docopt.PrintHelpOnly,
 		OptionsFirst: false,
@@ -49,11 +49,15 @@ func CreateArgs(usage string, argv []string, version string) (Args, error) {
 
 	opts, err := parser.ParseArgs(usage, argv, version)
 	if err != nil {
-		return Args{}, errors.Wrap(err, "Fail to parse arguments.")
+		return Args{}, false, errors.Wrap(err, "Fail to parse arguments.")
+	}
+
+	if len(opts) == 0 {
+		return Args{}, true, nil
 	}
 
 	var args Args
 	opts.Bind(&args)
 
-	return args, nil
+	return args, false, nil
 }
