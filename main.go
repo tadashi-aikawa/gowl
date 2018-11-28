@@ -27,9 +27,12 @@ func getRoot(config Config) string {
 }
 
 func main() {
-	args, err := CreateArgs(usage, os.Args[1:], version)
+	args, appEnd, err := CreateArgs(usage, os.Args[1:], version)
 	if err != nil {
 		log.Fatal(errors.Wrap(err, "Fail to create arguments."))
+	}
+	if appEnd {
+		return
 	}
 
 	config, err := CreateConfig()
@@ -62,5 +65,4 @@ func main() {
 			log.Fatal(errors.Wrap(err, "Fail to command `list`"))
 		}
 	}
-
 }

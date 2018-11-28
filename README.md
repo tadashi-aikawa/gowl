@@ -182,6 +182,6 @@ You have to create PR and merge.
 After you merged PR, then
 
 ```
-$ make release version=x.y.z
+$ make deploy version=x.y.z
 ```
 
