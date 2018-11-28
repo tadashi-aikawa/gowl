@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const version = "0.5.1"
+const version = "0.5.2"
 const usage = `Gowl.
 
 Usage:
