@@ -5,7 +5,7 @@ import (
 	"github.com/pkg/errors"
 )
 
-const version = "0.5.2"
+const version = "0.6.0"
 const usage = `Gowl.
 
 Usage:
@@ -13,6 +13,7 @@ Usage:
   gowl edit [-e=<editor> | --editor=<editor>]
   gowl web
   gowl list
+  gowl purge
   gowl -h | --help
   gowl -V | --version
 
@@ -28,10 +29,11 @@ Options:
 
 // Args created by CLI args
 type Args struct {
-	CmdGet  bool `docopt:"get"`
-	CmdEdit bool `docopt:"edit"`
-	CmdWeb  bool `docopt:"web"`
-	CmdList bool `docopt:"list"`
+	CmdGet   bool `docopt:"get"`
+	CmdEdit  bool `docopt:"edit"`
+	CmdWeb   bool `docopt:"web"`
+	CmdList  bool `docopt:"list"`
+	CmdPurge bool `docopt:"purge"`
 
 	Editor          string `docopt:"--editor"`
 	Force           bool   `docopt:"--force"`

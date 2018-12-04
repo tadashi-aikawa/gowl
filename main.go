@@ -64,5 +64,9 @@ func main() {
 		if err := CmdList(handler, getRoot(config)); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `list`"))
 		}
+	case args.CmdPurge:
+		if err := CmdPurge(handler, getRoot(config)); err != nil {
+			log.Fatal(errors.Wrap(err, "Fail to command `purge`"))
+		}
 	}
 }
