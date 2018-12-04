@@ -33,6 +33,7 @@ Usage:
   gowl edit [-e=<editor> | --editor=<editor>]
   gowl web
   gowl list
+  gowl purge
   gowl -h | --help
   gowl --version
 
