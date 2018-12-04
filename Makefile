@@ -41,7 +41,8 @@ release: clean-package ## Build and upload packages, regarding branch name as ve
 	@echo '2. Packaging'
 	@echo 'Linux...'
 	make package-linux
-	tar zfc dist/gowl-$(branch_version)-x86_64-linux.tar.gz dist/gowl --remove-files
+	tar zfc dist/gowl-$(branch_version)-x86_64-linux.tar.gz dist/gowl
+	rm -rf dist/gowl
 	@echo 'Windows...'
 	make package-windows
 	7z a dist/gowl-$(branch_version)-x86_64-windows.zip dist/gowl.exe
