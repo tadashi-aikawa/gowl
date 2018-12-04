@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
+	"github.com/mattn/go-pipeline"
 	"github.com/pkg/errors"
 	survey "gopkg.in/AlecAivazis/survey.v1"
 )
@@ -226,6 +227,41 @@ func CmdEdit(handler IHandler, root string, editor string) error {
 
 	if err := execCommand(&selection, editor); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selection))
+	}
+
+	return nil
+}
+
+// CmdPurge purges...
+func CmdPurge(handler IHandler, root string) error {
+	selection, err := selectLocalRepository(root)
+	if selection == "" {
+		return nil
+	}
+	if err != nil {
+		return errors.Wrap(err, "Fail to select a repository.")
+	}
+
+	os.Chdir(selection)
+
+	branches, err := pipeline.Output(
+		[]string{"git", "branch", "--merged", "master"},
+		[]string{"grep", "-vE", "'^\\*|master$|develop$'"},
+	)
+
+	if string(branches) == "" {
+		print("No branches to purge.")
+		return nil
+	}
+
+	print("Purge branches...\n" + string(branches))
+
+	if _, err := pipeline.Output(
+		[]string{"git", "branch", "--merged", "master"},
+		[]string{"grep", "-vE", "'^\\*|master$|develop$'"},
+		[]string{"xargs", "git", "branch", "-d"},
+	); err != nil {
+		return errors.Wrap(err, fmt.Sprintf("Fail to purge repositories %v", selection))
 	}
 
 	return nil

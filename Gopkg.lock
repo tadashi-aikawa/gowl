@@ -83,6 +83,14 @@
 
 [[projects]]
   branch = "master"
+  digest = "1:ec6d80e0622e6d95e40b76936f13d28dd5d88635968a7cc87bf4c737237e13e9"
+  name = "github.com/mattn/go-pipeline"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "cfb87a531e2beb376fe3ce94a6dfef7956d33bc7"
+
+[[projects]]
+  branch = "master"
   digest = "1:2b32af4d2a529083275afc192d1067d8126b578c7a9613b26600e4df9c735155"
   name = "github.com/mgutz/ansi"
   packages = ["."]
@@ -171,6 +179,7 @@
     "github.com/briandowns/spinner",
     "github.com/docopt/docopt-go",
     "github.com/google/go-github/github",
+    "github.com/mattn/go-pipeline",
     "github.com/mitchellh/go-homedir",
     "github.com/pkg/errors",
     "golang.org/x/oauth2",
