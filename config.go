@@ -25,6 +25,7 @@ type Config struct {
 	Editors         map[string]string
 	Browser         string
 	Root            string
+	SubSpaces       []string
 	GitHub          Service
 	BitbucketServer Service
 }
@@ -37,7 +38,6 @@ func CreateConfig() (Config, error) {
 	}
 
 	configPath := filepath.Join(home, ".gowlconfig")
-
 	var conf Config
 	if _, err := toml.DecodeFile(configPath, &conf); err != nil {
 		return Config{}, err

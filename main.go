@@ -53,19 +53,19 @@ func main() {
 			log.Fatal(errors.Wrap(err, "Fail to command `get`"))
 		}
 	case args.CmdEdit:
-		if err := CmdEdit(handler, getRoot(config), config.Editors[args.Editor]); err != nil {
+		if err := CmdEdit(handler, getRoot(config), config.SubSpaces, config.Editors[args.Editor]); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `edit`"))
 		}
 	case args.CmdWeb:
-		if err := CmdWeb(handler, getRoot(config), config.Browser); err != nil {
+		if err := CmdWeb(handler, getRoot(config), config.SubSpaces, config.Browser); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `web`"))
 		}
 	case args.CmdList:
-		if err := CmdList(handler, getRoot(config)); err != nil {
+		if err := CmdList(handler, getRoot(config), config.SubSpaces); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `list`"))
 		}
 	case args.CmdPurge:
-		if err := CmdPurge(handler, getRoot(config)); err != nil {
+		if err := CmdPurge(handler, getRoot(config), config.SubSpaces); err != nil {
 			log.Fatal(errors.Wrap(err, "Fail to command `purge`"))
 		}
 	}

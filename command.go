@@ -16,6 +16,14 @@ import (
 
 const gowlSite = "gowl.site"
 
+func concat(elm string, elms []string) []string {
+	rets := []string{elm}
+	for _, x := range elms {
+		rets = append(rets, x)
+	}
+	return rets
+}
+
 func toSelection(r Repository) string {
 	return fmt.Sprintf("*%-5v %-45v %-10v %v", r.Star, r.FullName, r.Language, r.License)
 }
@@ -89,9 +97,8 @@ func getCommandStdout(workdir *string, name string, arg ...string) (string, erro
 }
 
 // selectLocalRepository returns repository path.
-func selectLocalRepository(root string) (string, error) {
-	repoRoot := filepath.Join(root)
-	repoDirs, err := listRepositories(repoRoot)
+func selectLocalRepository(dirs []string) (string, error) {
+	repoDirs, err := listRepositories(dirs)
 	if err != nil {
 		return "", errors.Wrap(err, "Fail to search repositories")
 	}
@@ -205,8 +212,9 @@ func CmdGet(handler IHandler, root string, force bool, shallow bool, recursive b
 }
 
 // CmdList executes `open`
-func CmdList(handler IHandler, root string) error {
-	repositories, err := listRepositories(root)
+func CmdList(handler IHandler, root string, subSpaces []string) error {
+	dirs := concat(root, subSpaces)
+	repositories, err := listRepositories(dirs)
 	if err != nil {
 		return errors.Wrap(err, "Fail to search repository.")
 	}
@@ -216,8 +224,9 @@ func CmdList(handler IHandler, root string) error {
 }
 
 // CmdEdit executes `edit`
-func CmdEdit(handler IHandler, root string, editor string) error {
-	selection, err := selectLocalRepository(root)
+func CmdEdit(handler IHandler, root string, subSpaces []string, editor string) error {
+	dirs := concat(root, subSpaces)
+	selection, err := selectLocalRepository(dirs)
 	if selection == "" {
 		return nil
 	}
@@ -233,8 +242,10 @@ func CmdEdit(handler IHandler, root string, editor string) error {
 }
 
 // CmdPurge purges...
-func CmdPurge(handler IHandler, root string) error {
-	selection, err := selectLocalRepository(root)
+func CmdPurge(handler IHandler, root string, subSpaces []string) error {
+	dirs := concat(root, subSpaces)
+
+	selection, err := selectLocalRepository(dirs)
 	if selection == "" {
 		return nil
 	}
@@ -268,8 +279,9 @@ func CmdPurge(handler IHandler, root string) error {
 }
 
 // CmdWeb executes `web`
-func CmdWeb(handler IHandler, root string, browser string) error {
-	selection, err := selectLocalRepository(root)
+func CmdWeb(handler IHandler, root string, subSpaces []string, browser string) error {
+	dirs := concat(root, subSpaces)
+	selection, err := selectLocalRepository(dirs)
 	if selection == "" {
 		return nil
 	}

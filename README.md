@@ -9,6 +9,7 @@ Support for both Windows and Linux.
 
 ![DEMO](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo.gif)
 
+
 Install
 -------
 
@@ -57,8 +58,19 @@ Quick start
 ```toml
 root = "Root directory of repositories for gowl"
 # ex. C:\\users\\tadashi-aikawa\\.gowl
+
 browser = "Your browser"
 # ex. C:\\Program Files (x86)\\Google\\Chrome\\Application\\Chrome.exe
+
+subSpaces = [
+  "Subspaces that can be used for purposes other than Get 1",
+  "Subspaces that can be used for purposes other than Get 2",
+]
+# ex. [
+#   "C:\\Users\\tadashi-aikawa\\tmp",
+#   "C:\\Users\\tadashi-aikawa\\works",
+# ]
+
 
 [editors]
 default = "code"

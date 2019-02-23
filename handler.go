@@ -10,6 +10,16 @@ import (
 	"golang.org/x/oauth2"
 )
 
+func contains(elms []string, elm string) bool {
+	for _, e := range elms {
+		if e == elm {
+			return true
+		}
+	}
+
+	return false
+}
+
 // Repository used by gowl
 type Repository struct {
 	FullName     string
@@ -105,17 +115,22 @@ func createGithubClient(token string) *github.Client {
 	return github.NewClient(tc)
 }
 
-func listRepositories(dir string) ([]string, error) {
+func listRepositories(dirs []string) ([]string, error) {
 	var gitDirs []string
-	err := filepath.Walk(dir, func(cpath string, info os.FileInfo, err error) error {
-		if _, err := os.Stat(filepath.Join(cpath, ".git")); err == nil {
-			gitDirs = append(gitDirs, cpath)
-			return filepath.SkipDir
+	for _, dir := range dirs {
+		err := filepath.Walk(dir, func(cpath string, info os.FileInfo, err error) error {
+			if contains([]string{"node_modules", "_build", "build", "dist"}, filepath.Base(cpath)) {
+				return filepath.SkipDir
+			}
+			if _, err := os.Stat(filepath.Join(cpath, ".git")); err == nil {
+				gitDirs = append(gitDirs, cpath)
+				return filepath.SkipDir
+			}
+			return nil
+		})
+		if err != nil {
+			return nil, errors.Wrap(err, "Fail to search repositories.")
 		}
-		return nil
-	})
-	if err != nil {
-		return nil, errors.Wrap(err, "Fail to search repositories.")
 	}
 
 	return gitDirs, nil
