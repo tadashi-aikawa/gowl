@@ -42,7 +42,21 @@ type Args struct {
 	BitbucketServer bool   `docopt:"--bitbucket-server"`
 }
 
-// CreateArgs creates Args
+/*
+CreateArgs creates Args.
+
+Example:
+
+	args, appEnd, err := CreateArgs(usage, os.Args[1:], version)
+	if err != nil {
+		log.Fatal(errors.Wrap(err, "Fail to create arguments."))
+	}
+	if appEnd {
+		return
+	}
+
+	fmt.Println(args)
+*/
 func CreateArgs(usage string, argv []string, version string) (Args, bool, error) {
 	parser := &docopt.Parser{
 		HelpHandler:  docopt.PrintHelpOnly,
