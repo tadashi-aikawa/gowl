@@ -234,7 +234,7 @@ func CmdEdit(handler IHandler, root string, subSpaces []string, editor string) e
 		return errors.Wrap(err, "Fail to select a repository.")
 	}
 
-	if err := execCommand(&selection, editor); err != nil {
+	if err := execCommand(&selection, editor, "."); err != nil {
 		return errors.Wrap(err, fmt.Sprintf("Fail to edit repository %v", selection))
 	}
 
