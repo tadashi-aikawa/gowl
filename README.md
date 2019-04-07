@@ -160,14 +160,8 @@ For developer
 
 ### Prerequirements
 
-* [dep](https://golang.github.io/dep/)
+* go >= 1.11 and use go module
 
-
-### Create environment
-
-```
-$ dep ensure
-```
 
 ### Release
 
@@ -175,7 +169,6 @@ $ dep ensure
 
 * make
 * bash
-* dep
 * ghr
 
 

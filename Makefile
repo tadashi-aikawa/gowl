@@ -35,6 +35,10 @@ clean-package: ## Remove packages with dist.
 	rm -rf dist
 
 release: clean-package ## Build and upload packages, regarding branch name as version
+	@echo '0. Vefiry'
+	go mod tidy
+	go mod verify
+
 	@echo '1. Update versions'
 	@sed -i -r 's/const version = ".+"/const version = "$(branch_version)"/g' args.go
 
