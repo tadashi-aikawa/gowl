@@ -5,7 +5,11 @@ gowl
 
 An interactive git tool that works with GitHub and Bitbucket Server.
 
-Support for both Windows and Linux.
+Support for
+
+* Windows
+* Linux
+* Mac
 
 ![DEMO](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo.gif)
 
@@ -180,12 +184,14 @@ Confirm that your branch name equals release version, then...
 $ make release
 ```
 
-You have to create PR and merge.
+#### Merge
 
+1. Create PR
+2. Merge PR to master
+3. Checkout master
+4. Pull
 
 #### deploy
-
-After you merged PR, then
 
 ```
 $ make deploy version=x.y.z
