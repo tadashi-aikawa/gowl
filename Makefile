@@ -24,12 +24,16 @@ branch_version := $(shell git rev-parse --abbrev-ref HEAD)
 #------
 
 package-windows: ## Create gowl.exe for Windows.
-	@mkdir -p dist
-	GOOS=windows GOARCH=amd64 go build -o dist/gowl.exe
+	@mkdir -p dist/windows
+	GOOS=windows GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/windows/gowl.exe
+
+package-mac: ## Create gowl for Mac.
+	@mkdir -p dist/mac
+	GOOS=darwin GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/mac/gowl
 
 package-linux: ## Create gowl for Linux.
-	@mkdir -p dist
-	GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/gowl
+	@mkdir -p dist/linux
+	GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/linux/gowl
 
 clean-package: ## Remove packages with dist.
 	rm -rf dist
@@ -45,12 +49,16 @@ release: clean-package ## Build and upload packages, regarding branch name as ve
 	@echo '2. Packaging'
 	@echo 'Linux...'
 	make package-linux
-	tar zfc dist/gowl-$(branch_version)-x86_64-linux.tar.gz dist/gowl
-	rm -rf dist/gowl
+	tar zfc dist/gowl-$(branch_version)-x86_64-linux.tar.gz dist/linux/gowl
+	rm -rf dist/linux
 	@echo 'Windows...'
 	make package-windows
-	7z a dist/gowl-$(branch_version)-x86_64-windows.zip dist/gowl.exe
-	rm -rf dist/gowl.exe
+	7z a dist/gowl-$(branch_version)-x86_64-windows.zip dist/windows/gowl.exe
+	rm -rf dist/windows
+	@echo 'Mac...'
+	make package-mac
+	tar zfc dist/gowl-$(branch_version)-x86_64-darwin.tar.gz dist/mac/gowl
+	rm -rf dist/mac
 
 	@echo '3. Staging and commit'
 	git add args.go
