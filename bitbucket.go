@@ -72,7 +72,7 @@ type projectLinks struct {
 }
 
 func (c *BitbucketClient) searchRepositories(word string) (BitbucketRepositoryResponse, error) {
-	url := fmt.Sprintf("%v/rest/api/1.0/repos?name=%v", c.BaseURL, word)
+	url := fmt.Sprintf("%v/rest/api/1.0/repos?name=%v&limit=100", c.BaseURL, word)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return BitbucketRepositoryResponse{}, err
