@@ -17,11 +17,7 @@ import (
 const gowlSite = "gowl.site"
 
 func concat(elm string, elms []string) []string {
-	rets := []string{elm}
-	for _, x := range elms {
-		rets = append(rets, x)
-	}
-	return rets
+	return append(append([]string(nil), elm), elms...)
 }
 
 func toSelection(r Repository) string {
