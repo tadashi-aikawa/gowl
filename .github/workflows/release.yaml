@@ -21,9 +21,9 @@ jobs:
       - run: GOOS=windows GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o windows-gowl.exe
       - run: GOOS=darwin GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o mac-gowl
       - run: GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o linux-gowl
-      - run: tar zfc dist/gowl-${{ github.ref }}-x86_64-windows.tar.gz windows-gowl.exe
-      - run: tar zfc dist/gowl-${{ github.ref }}-x86_64-darwin.tar.gz mac-gowl
-      - run: tar zfc dist/gowl-${{ github.ref }}-x86_64-linux.tar.gz linux-gowl
+      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-windows.tar.gz windows-gowl.exe
+      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-darwin.tar.gz mac-gowl
+      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-linux.tar.gz linux-gowl
 
       - name: Create Release
         id: create_release
@@ -33,6 +33,6 @@ jobs:
         with:
           draft: true
           files: |
-            dist/gowl-${{ github.ref }}-x86_64-windows.tar.gz
-            dist/gowl-${{ github.ref }}-x86_64-darwin.tar.gz
-            dist/gowl-${{ github.ref }}-x86_64-linux.tar.gz
+            dist/gowl-${{ github.ref_name }}-x86_64-windows.tar.gz
+            dist/gowl-${{ github.ref_name }}-x86_64-darwin.tar.gz
+            dist/gowl-${{ github.ref_name }}-x86_64-linux.tar.gz
