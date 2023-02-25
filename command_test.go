@@ -3,23 +3,23 @@ package main
 import "testing"
 
 func TestConcat(t *testing.T) {
-	cases := []struct{
-		elm string
+	cases := []struct {
+		elm  string
 		elms []string
 		want []string
-	} {
+	}{
 		{
-			elm: "",
+			elm:  "",
 			elms: []string(nil),
 			want: []string{""},
 		},
 		{
-			elm: "owl",
+			elm:  "owl",
 			elms: []string{"fox"},
 			want: []string{"owl", "fox"},
 		},
 		{
-			elm: "owl",
+			elm:  "owl",
 			elms: []string{"fox", "raccoon"},
 			want: []string{"owl", "fox", "raccoon"},
 		},
