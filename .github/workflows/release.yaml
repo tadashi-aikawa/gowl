@@ -18,12 +18,13 @@ jobs:
 
       - run: go mod tidy
       - run: go mod verify
-      - run: GOOS=windows GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o windows-gowl.exe
-      - run: GOOS=darwin GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o mac-gowl
-      - run: GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o linux-gowl
-      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-windows.tar.gz windows-gowl.exe
-      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-darwin.tar.gz mac-gowl
-      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-linux.tar.gz linux-gowl
+      - run: mkdir -p dist/windows dist/mac dist/linux
+      - run: GOOS=windows GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/windows/gowl.exe
+      - run: GOOS=darwin GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/mac/gowl
+      - run: GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o dist/linux/gowl
+      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-windows.tar.gz dist/windows/gowl.exe
+      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-darwin.tar.gz dist/mac/gowl
+      - run: tar zfc dist/gowl-${{ github.ref_name }}-x86_64-linux.tar.gz dist/linux/gowl
 
       - name: Create Release
         id: create_release
