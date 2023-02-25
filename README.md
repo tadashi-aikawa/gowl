@@ -161,31 +161,12 @@ alias cdg "cd (gowl list | fzf)"
 
 ### Release
 
-#### Requirements
+> Requirements: [Task]
 
-* make
-* bash
-* ghr
+[Task]: https://github.com/go-task/task
 
-
-#### Packaging
-
-Confirm that your branch name equals release version, then...
+Confirm that your branch name is mater. then...
 
 ```
-$ make release
+$ task release VERSION=x.y.z
 ```
-
-#### Merge
-
-1. Create PR
-2. Merge PR to master
-3. Checkout master
-4. Pull
-
-#### deploy
-
-```
-$ make deploy version=x.y.z
-```
-

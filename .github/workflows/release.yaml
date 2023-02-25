@@ -1,0 +1,38 @@
+name: "Release"
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '1.20'
+
+      - run: go mod tidy
+      - run: go mod verify
+      - run: GOOS=windows GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o windows-gowl.exe
+      - run: GOOS=darwin GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o mac-gowl
+      - run: GOOS=linux GOARCH=amd64 go build -a -tags netgo -installsuffix netgo --ldflags '-extldflags "-static"' -o linux-gowl
+      - run: tar zfc dist/gowl-${{ github.ref }}-x86_64-windows.tar.gz windows-gowl.exe
+      - run: tar zfc dist/gowl-${{ github.ref }}-x86_64-darwin.tar.gz mac-gowl
+      - run: tar zfc dist/gowl-${{ github.ref }}-x86_64-linux.tar.gz linux-gowl
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: true
+          files: |
+            dist/gowl-${{ github.ref }}-x86_64-windows.tar.gz
+            dist/gowl-${{ github.ref }}-x86_64-darwin.tar.gz
+            dist/gowl-${{ github.ref }}-x86_64-linux.tar.gz
