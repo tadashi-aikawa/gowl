@@ -1,5 +1,4 @@
-gowl
-====
+# gowl
 
 ![](https://img.shields.io/github/release/tadashi-aikawa/gowl.svg)
 
@@ -14,8 +13,7 @@ Support for
 ![DEMO](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo.gif)
 
 
-Install
--------
+## Install
 
 ```
 $ go get -u github.com/tadashi-aikawa/gowl
@@ -26,8 +24,7 @@ or
 Download a binary from [release page](https://github.com/tadashi-aikawa/gowl/releases).
 
 
-Usage
------
+## Usage
 
 ```
 $ gowl --help
@@ -52,8 +49,7 @@ Options:
 ```
 
 
-Quick start
------------
+## Quick start
 
 ### Create `~/.gowlconfig`
 
@@ -122,8 +118,7 @@ For example..
 2. `gowl edit`
 
 
-Configuration
--------------
+## Configuration
 
 Gowl uses toml format as a configuration file.  
 Please check `config.go`.
@@ -131,8 +126,7 @@ Please check `config.go`.
 TODO: Definition table
 
 
-Root directory
---------------
+## Root directory
 
 The root directory is determined by the following priority.
 
@@ -141,8 +135,7 @@ The root directory is determined by the following priority.
 3. `<HOME>/.gowlroot`
 
 
-Other
------
+## Other
 
 If you use fzf(or peco), the following setting may make you happy!
 
@@ -159,12 +152,11 @@ alias cdg "cd (gowl list | fzf)"
 ![DEMO2](https://raw.githubusercontent.com/tadashi-aikawa/gowl/master/demo2.gif)
 
 
-For developer
--------------
+## For developer
 
-### Prerequirements
+### Requirements
 
-* go >= 1.11 and use go module
+* go >= 1.20
 
 
 ### Release
